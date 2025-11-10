@@ -252,15 +252,15 @@ exp
 // V.1 Exp. arithmetiques
 : MOINS exp %prec UNA         {}
          // -x + y lue comme (- x) + y  et pas - (x + y)
-| exp PLUS exp                {}
-| exp MOINS exp               {}
-| exp STAR exp                {}
-| exp DIV exp                 {}
+| exp PLUS exp                {$$ = make_code_arith($1,PLUS,$2);}
+| exp MOINS exp               {$$ = make_code_arith($1,SUB,$2);}
+| exp STAR exp                {$$ = make_code_arith($1,MULT,$2);}
+| exp DIV exp                 {$$ = make_code_arith($1,DIV,$2);}
 | PO exp PF                   {}
-| ID                          {}
+| ID                          {printf("LOAD %s\n", $1); }
 | app                         {}
-| NUM                         {}
-| DEC                         {}
+| NUM                         {$$=INT;}
+| DEC                         {$$=FLOAT;}
 
 
 // V.2. Booléens
