@@ -15,7 +15,9 @@ void yyerror (char* s) {
   }
 		
 int depth=0; // block depth
- 
+ int current_type; //Modif by Yani
+ int current_offset = 0; //Modif by Yani
+ int make_code_arith(int Exp1, int op, int Exp2); //Modif by Yani
 
 %}
 
@@ -159,13 +161,25 @@ decl: var_decl                  {}
 
 var_decl : type vlist          {}
 ;
-
-vlist: vlist vir ID            {} // récursion gauche pour traiter les variables déclararées de gauche à droite
-| ID                           {}
+//Modif by Yani;
+vlist: vlist vir ID            {
+  attribute a = new_attribute();
+  a -> type = current_type;
+  a -> depth = depth;
+  a -> offset = current_offset++;
+  set_symbol_value($<string_value>3, a);
+} // récursion gauche pour traiter les variables déclararées de gauche à droite
+| ID                           {
+ attribute a = new_attribute();
+  a -> type = current_type;
+  a -> depth = depth;
+  a -> offset = current_offset++;
+  set_symbol_value($<string_value>1, a);
+}
 ;
-
+//Modif by Yani;
 type
-: typename                     {}
+: typename                     { $$ = $1; current_type = $1;}
 ;
 
 typename // Utilisation des terminaux comme codage (entier) du type !!!
@@ -195,17 +209,22 @@ ao block af                   {}
 
 // Accolades explicites pour gerer l'entrée et la sortie d'un sous-bloc
 
-ao : AO                       {}
+ao : AO                       {depth++;}
 ;
 
-af : AF                       {}
+af : AF                       {pop_symbols(depth); depth--;}
 ;
 
 
 // IV.1 Affectations
-
-aff : ID EQ exp               {}
-;
+//Modif by Yani.
+aff : ID EQ exp               {
+  attribute a = get_symbol_value($<string_value>1);
+  if(!a){
+    yyerror("Mon reuf la variable il faut la déclarer");
+  }
+  printf("STORE %d\n", a -> offset);
+}
 
 
 // IV.2 Return
@@ -252,15 +271,21 @@ exp
 // V.1 Exp. arithmetiques
 : MOINS exp %prec UNA         {}
          // -x + y lue comme (- x) + y  et pas - (x + y)
-| exp PLUS exp                {$$ = make_code_arith($1,PLUS,$2);}
-| exp MOINS exp               {$$ = make_code_arith($1,SUB,$2);}
-| exp STAR exp                {$$ = make_code_arith($1,MULT,$2);}
-| exp DIV exp                 {$$ = make_code_arith($1,DIV,$2);}
-| PO exp PF                   {}
-| ID                          {printf("LOAD %s\n", $1); }
+| exp PLUS exp                {$$ = make_code_arith($1,PLUS,$3);}
+| exp MOINS exp               {$$ = make_code_arith($1,MOINS,$3);}
+| exp STAR exp                {$$ = make_code_arith($1,STAR,$3);}
+| exp DIV exp                 {$$ = make_code_arith($1,DIV,$3);}
+| PO exp PF                   {$$ = $2;}
+| ID                          {attribute a = get_symbol_value($<string_value>1);
+  if(a == NULL) yyerror("Cet identifiant n'a jamais été déclaré...");
+  printf("LOAD %s\n", $<string_value>1);
+  $$ = a -> type;
+}
 | app                         {}
-| NUM                         {$$=INT;}
-| DEC                         {$$=FLOAT;}
+| NUM                         {printf("LOADI(%d)\n",$<int_value>1);
+                                       $$=INT;}
+| DEC                         {printf("LOADF(%f)\n",$<float_value>1);
+                                       $$=FLOAT;}
 
 
 // V.2. Booléens
@@ -322,3 +347,4 @@ return yyparse (); // output your compilation
  
 } 
 
+#include "aux.y" //Modif by Yani

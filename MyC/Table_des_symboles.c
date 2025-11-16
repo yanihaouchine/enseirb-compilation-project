@@ -79,4 +79,17 @@ attribute set_symbol_value(char * symb_id,attribute value) {
 	storage = tracker;
 	return storage -> symbol_value;
 }
+//modif by Yani.
+extern int current_offset;
 
+void pop_symbols(int current_depth){
+  elem *tracker = storage;
+  while(tracker && (tracker -> symbol_value -> depth > current_depth) ){
+    elem *e = tracker;
+    tracker = tracker -> next;
+    free(e -> symbol_value);
+    free(e);
+    current_offset--;
+    storage = tracker;
+  }
+}

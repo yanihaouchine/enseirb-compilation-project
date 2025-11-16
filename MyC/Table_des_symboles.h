@@ -44,4 +44,9 @@ attribute get_symbol_value(char * symb_id);
 /* add the symbol symb_id with given value */
 attribute set_symbol_value(char * symb_id,attribute value);
 
+
+
+//Modif by Yani
+void pop_symbols(int current_depth);
+
 #endif

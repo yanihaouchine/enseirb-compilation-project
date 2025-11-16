@@ -1,6 +1,6 @@
 all :	lang
 
-syntax : lexic	lang.y
+syntax : lexic	lang.y aux.y
 	bison -v -y  -d  lang.y
 lexic : lang.l
 	flex lang.l
