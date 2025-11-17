@@ -104,6 +104,7 @@ glob_decl_list : glob_var_list glob_fun_list {}
 
 glob_var_list : glob_var_list decl PV {}
 | {printf("void init_glob_var(){\n"); // starting  function init_glob_var() definition in target code
+   current_offset = 0;
  }
 ;
 
@@ -168,6 +169,10 @@ vlist: vlist vir ID            {
   a -> depth = depth;
   a -> offset = current_offset++;
   set_symbol_value($<string_value>3, a);
+  if(depth == 0){
+    if(current_type == INT) printf("LOADI(0)\n");
+    else printf("LOADF(0.0)\n");
+  }
 } // récursion gauche pour traiter les variables déclararées de gauche à droite
 | ID                           {
  attribute a = new_attribute();
@@ -175,6 +180,10 @@ vlist: vlist vir ID            {
   a -> depth = depth;
   a -> offset = current_offset++;
   set_symbol_value($<string_value>1, a);
+   if(depth == 0){
+    if(current_type == INT) printf("LOADI(0)\n");
+    else printf("LOADF(0.0)\n");
+  }
 }
 ;
 //Modif by Yani;
