@@ -2,10 +2,9 @@
 
 
 #include "Table_des_symboles.h"
-
 #include <stdio.h>
 #include <stdlib.h>
-  
+
 extern int yylex();
 extern int yyparse();
 
@@ -15,9 +14,8 @@ void yyerror (char* s) {
   }
 		
 int depth=0; // block depth
- int current_type; //Modif by Yani
- int current_offset = 0; //Modif by Yani
- int make_code_arith(int Exp1, int op, int Exp2); //Modif by Yani
+int current_type = 0; // type courant pour add_global_variable() //Modifier par yasmine
+int current_offset = 0; // compteur global pour les offsets
 
 %}
 
@@ -26,7 +24,7 @@ int depth=0; // block depth
   char * string_value;
   int int_value;
   float float_value;
-  int type_value;
+  int type_value; //pour stocker le type de exp
   int label_value;
   int offset_value;
 }
@@ -161,25 +159,49 @@ decl: var_decl                  {}
 
 var_decl : type vlist          {}
 ;
-//Modif by Yani;
-vlist: vlist vir ID            {
-  attribute a = new_attribute();
-  a -> type = current_type;
-  a -> depth = depth;
-  a -> offset = current_offset++;
-  set_symbol_value($<string_value>3, a);
-} // récursion gauche pour traiter les variables déclararées de gauche à droite
-| ID                           {
- attribute a = new_attribute();
-  a -> type = current_type;
-  a -> depth = depth;
-  a -> offset = current_offset++;
-  set_symbol_value($<string_value>1, a);
+
+vlist: vlist vir ID { //MODIFER pae Yasmine
+attribute a = new_attribute();
+a->type = current_type;
+a->depth = depth;
+a->offset = current_offset++;
+set_symbol_value($<string_value>3, a);
+printf("// Declare %s of type %s with offset %d at depth %d\n",
+       $<string_value>3, type2string(a->type), a->offset, a->depth);
+
+
+if (a->type == INT) {
+    printf("LOADI(0)\n\n");
+} else if (a->type == FLOAT) {
+    printf("LOADF(0.0)\n\n");
+}
+
+}
+| ID {
+attribute a = new_attribute();
+a->type = current_type;
+a->depth = depth;
+a->offset = current_offset++;
+set_symbol_value($<string_value>1, a);
+
+printf("// Declare %s of type %s with offset %d at depth %d\n",
+       $<string_value>1, type2string(a->type), a->offset, a->depth);
+
+if (a->type == INT) {
+    printf("LOADI(0)\n\n");
+} else if (a->type == FLOAT) {
+    printf("LOADF(0.0)\n\n");
+}
+
 }
 ;
-//Modif by Yani;
+
+
+
 type
-: typename                     { $$ = $1; current_type = $1;}
+: typename     { $$ = $1; current_type = $1;} //Modifier
+;
+
 ;
 
 typename // Utilisation des terminaux comme codage (entier) du type !!!
@@ -209,22 +231,32 @@ ao block af                   {}
 
 // Accolades explicites pour gerer l'entrée et la sortie d'un sous-bloc
 
-ao : AO                       {depth++;}
+ao : AO                       {}
 ;
 
-af : AF                       {pop_symbols(depth); depth--;}
+af : AF                       {}
 ;
 
 
 // IV.1 Affectations
-//Modif by Yani.
-aff : ID EQ exp               {
-  attribute a = get_symbol_value($<string_value>1);
-  if(!a){
-    yyerror("Mon reuf la variable il faut la déclarer");
-  }
-  printf("STORE %d\n", a -> offset);
+
+// Affectation : aff //MODIFER par Yasmine
+aff : ID EQ exp {
+attribute a = get_symbol_value($1);
+if (!a) yyerror("Variable non déclarée");
+if(a->type == FLOAT && $3 == INT) {
+    printf("I2F2\n");   // conversion de l'exp vers float
+} else if(a->type == INT && $3 == FLOAT) {
+    printf("F2I1\n");   // conversion de l'exp vers int
 }
+
+printf("LOADI(%d)\n", a->offset);
+printf("STORE\n");
+
+
+};
+
+
 
 
 // IV.2 Return
@@ -267,25 +299,24 @@ while : WHILE                 {}
 
 // V. Expressions
 
-exp
+exp //MODIFIER PAR Yas
 // V.1 Exp. arithmetiques
 : MOINS exp %prec UNA         {}
          // -x + y lue comme (- x) + y  et pas - (x + y)
-| exp PLUS exp                {$$ = make_code_arith($1,PLUS,$3);}
-| exp MOINS exp               {$$ = make_code_arith($1,MOINS,$3);}
-| exp STAR exp                {$$ = make_code_arith($1,STAR,$3);}
-| exp DIV exp                 {$$ = make_code_arith($1,DIV,$3);}
+| exp PLUS exp                {$$ = make_code_arith($1, PLUS, $3);}
+| exp MOINS exp               {$$ = make_code_arith($1, MOINS, $3);}
+| exp STAR exp                { $$ = make_code_arith($1, STAR, $3);}
+| exp DIV  exp                {$$ = make_code_arith($1, DIV, $3);}
 | PO exp PF                   {$$ = $2;}
-| ID                          {attribute a = get_symbol_value($<string_value>1);
-  if(a == NULL) yyerror("Cet identifiant n'a jamais été déclaré...");
-  printf("LOAD %s\n", $<string_value>1);
-  $$ = a -> type;
-}
+| ID                          {attribute a = get_symbol_value($1);
+    if (!a) yyerror("Variable non déclarée");
+    printf("LOADI(%d)\n", a->offset);
+    printf("LOAD\n");
+    $$ = a->type;}
 | app                         {}
-| NUM                         {printf("LOADI(%d)\n",$<int_value>1);
-                                       $$=INT;}
-| DEC                         {printf("LOADF(%f)\n",$<float_value>1);
-                                       $$=FLOAT;}
+| NUM  { printf("LOADI(%d)\n",$<int_value>1); $$=INT; }
+| DEC  { printf("LOADF(%f)\n",$<float_value>1); $$=FLOAT; }
+
 
 
 // V.2. Booléens
@@ -347,4 +378,4 @@ return yyparse (); // output your compilation
  
 } 
 
-#include "aux.y" //Modif by Yani
+#include "aux.y"
