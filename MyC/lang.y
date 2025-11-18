@@ -102,6 +102,7 @@ glob_decl_list : glob_var_list glob_fun_list {}
 
 glob_var_list : glob_var_list decl PV {}
 | {printf("void init_glob_var(){\n"); // starting  function init_glob_var() definition in target code
+   current_offset = 0;
  }
 ;
 
@@ -192,6 +193,7 @@ if (a->type == INT) {
 } else if (a->type == FLOAT) {
     printf("LOADF(0.0)\n\n");
 }
+
 
 }
 ;
