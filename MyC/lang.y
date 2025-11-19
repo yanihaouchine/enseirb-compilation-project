@@ -4,7 +4,7 @@
 #include "Table_des_symboles.h"
 #include <stdio.h>
 #include <stdlib.h>
-
+  int make_code_arith(int exp1, int op, int exp2);
 extern int yylex();
 extern int yyparse();
 
