@@ -12,10 +12,28 @@ void yyerror (char* s) {
   printf ("%s\n",s);
   exit(0);
   }
-		
+int makeNum ()
+{
+  static int n = -1;
+  return ++n;
+}
+
 int depth=0; // block depth
 int current_type = 0; // type courant pour add_global_variable() //Modifier par yasmine
 int current_offset = 0; // compteur global pour les offsets
+static int current_cond = -1;
+#define MAX_LABELS 100
+
+static int current_loop = -1;
+
+int label_stack[MAX_LABELS];
+
+int label_sp = 0;
+void push_label(int l)  { if(label_sp < MAX_LABELS) label_stack[label_sp++] = l; }
+int  pop_label()        { return (label_sp>0) ? label_stack[--label_sp] : -1; }
+int  top_label()        { return (label_sp>0) ? label_stack[label_sp-1] : -1; }
+
+
 
 %}
 
@@ -222,7 +240,8 @@ pv : PV                       {}
 ;
  
 inst:
-ao block af                   {}
+ao block af                   {depth++;
+                                }
 | exp pv                      {}
 | aff pv                      {}
 | ret pv                      {}
@@ -233,10 +252,12 @@ ao block af                   {}
 
 // Accolades explicites pour gerer l'entrée et la sortie d'un sous-bloc
 
-ao : AO                       {}
+ao : AO                       {printf("SAVEBP \n");
+}
 ;
 
-af : AF                       {}
+af : AF                       {printf("RESTOREBP \n");
+}
 ;
 
 
@@ -272,30 +293,49 @@ ret : RETURN exp              {}
 //           avec ELSE en entrée (voir y.output)
 
 cond :
-if bool_cond inst  elsop       {}
+if bool_cond inst  elsop       {
+current_cond--;
+depth--;
+}
 ;
 
-elsop : else inst              {}
-|                  %prec IFX   {} // juste un "truc" pour éviter le message de conflit shift / reduce
+elsop : else inst              { printf("End_%d:\n",current_cond);
+}
+|                  %prec IFX   {
+    printf("False_%d:\n", current_cond);
+ } // juste un "truc" pour éviter le message de conflit shift / reduce
 ;
 
-bool_cond : PO exp PF         {}
+bool_cond : PO exp PF         {
+    printf("IFN(FALSE_%i) \n",current_cond);}
 ;
 
-if : IF                       {}
+if : IF                       { 
+current_cond++;
+depth++;
+}
 ;
 
-else : ELSE                   {}
+else : ELSE                   {
+  printf("GOTTO(End_%i)\n",current_cond); 
+  printf("False_%d:\n", current_cond); 
+  
+
+}
 ;
 
 // IV.4. Iterations
 
-loop : while while_cond inst  {}
+loop : while while_cond inst  {printf("GOTO(StartLoop_%i)\n",current_loop);
+printf(" EndLoop_%i :\n",current_loop);
+}
 ;
 
-while_cond : PO exp PF        {}
+while_cond : PO exp PF        {printf("IFN(EndLoop_%i ):\n",current_loop);}
 
-while : WHILE                 {}
+while : WHILE                 {
+  current_loop++;
+  printf("StartLoop_%i :\n",current_loop);}
 ;
 
 
@@ -323,13 +363,13 @@ exp //MODIFIER PAR Yas
 
 // V.2. Booléens
 
-| NOT exp %prec UNA           {}
-| exp INF exp                 {}
-| exp SUP exp                 {}
-| exp EQUAL exp               {}
-| exp DIFF exp                {}
-| exp AND exp                 {}
-| exp OR exp                  {}
+| NOT exp %prec UNA           {printf("NOT\n"); $$=$2;}
+| exp INF exp                 {printf("LTI\n"); $$=INT;}
+| exp SUP exp                 {printf("GTI\n"); $$=INT;}
+| exp EQUAL exp               {printf("EQI\n"); $$=INT;}
+| exp DIFF exp                {printf("NEI\n"); $$=INT;}
+| exp AND exp                 {printf("AND\n"); $$=INT;}
+| exp OR exp                  {printf("OR\n"); $$=INT;}
 
 ;
 

@@ -1,7 +1,0 @@
-int x;
-float y;
-void main(){
-x=3;
-y=5;
-x+y;
-}
