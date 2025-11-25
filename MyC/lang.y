@@ -21,18 +21,16 @@ int makeNum ()
 int depth=0; // block depth
 int current_type = 0; // type courant pour add_global_variable() //Modifier par yasmine
 int current_offset = 0; // compteur global pour les offsets
-static int current_cond = -1;
+
 #define MAX_LABELS 100
-
 static int current_loop = -1;
+static int cond_stack[MAX_LABELS];
+static int cond_sp = 0;
+static int cond_count = 0;
 
-int label_stack[MAX_LABELS];
-
-int label_sp = 0;
-void push_label(int l)  { if(label_sp < MAX_LABELS) label_stack[label_sp++] = l; }
-int  pop_label()        { return (label_sp>0) ? label_stack[--label_sp] : -1; }
-int  top_label()        { return (label_sp>0) ? label_stack[label_sp-1] : -1; }
-
+void push_cond(int v) { cond_stack[cond_sp++] = v; }
+int  pop_cond() { return cond_stack[--cond_sp]; }
+int  top_cond() { return cond_stack[cond_sp-1]; }
 
 
 %}
@@ -294,31 +292,33 @@ ret : RETURN exp              {}
 
 cond :
 if bool_cond inst  elsop       {
-current_cond--;
-depth--;
+
+pop_cond();
+
 }
 ;
 
-elsop : else inst              { printf("End_%d:\n",current_cond);
+elsop : else inst              {   printf("End_%d:\n", top_cond());
 }
 |                  %prec IFX   {
-    printf("False_%d:\n", current_cond);
+    printf("False_%d:\n", top_cond());
  } // juste un "truc" pour éviter le message de conflit shift / reduce
 ;
 
 bool_cond : PO exp PF         {
-    printf("IFN(FALSE_%i) \n",current_cond);}
+printf("IFN(False_%d)\n", top_cond());}
 ;
 
-if : IF                       { 
-current_cond++;
-depth++;
+if : IF { 
+  int label = cond_count++;
+    push_cond(label);
 }
-;
+
 
 else : ELSE                   {
-  printf("GOTTO(End_%i)\n",current_cond); 
-  printf("False_%d:\n", current_cond); 
+ printf("GOTO(End_%d)\n", top_cond());
+printf("False_%d:\n", top_cond());
+
   
 
 }
@@ -326,16 +326,19 @@ else : ELSE                   {
 
 // IV.4. Iterations
 
-loop : while while_cond inst  {printf("GOTO(StartLoop_%i)\n",current_loop);
-printf(" EndLoop_%i :\n",current_loop);
+loop : while while_cond inst  {printf("GOTO(StartLoop_%i)\n",top_cond());
+printf(" EndLoop_%i :\n",top_cond());
+
+pop_cond();
 }
 ;
 
-while_cond : PO exp PF        {printf("IFN(EndLoop_%i ):\n",current_loop);}
+while_cond : PO exp PF        {printf("IFN(EndLoop_%i ):\n",top_cond());}
 
 while : WHILE                 {
-  current_loop++;
-  printf("StartLoop_%i :\n",current_loop);}
+ int label = cond_count++;
+    push_cond(label);
+      printf("StartLoop_%i :\n",top_cond());}
 ;
 
 
