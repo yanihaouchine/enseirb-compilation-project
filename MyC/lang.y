@@ -276,16 +276,11 @@ if(a->type == FLOAT && $3 == INT) {
 } else if(a->type == INT && $3 == FLOAT) {
     printf("F2I1\n");   // conversion de l'exp vers int
 }
-if (a->depth == depth) {
-    // locale
-    printf("LOADBP\n");
-    printf("SHIFT(%d)\n", a->offset);
-} else {
-    // globale
+
     printf("LOADI(%d)\n", a->offset);
     
-}
-printf("STORE\n");
+
+
 
 
 
@@ -306,7 +301,6 @@ ret : RETURN exp              {}
 
 cond :
 if bool_cond inst  elsop       {
-
 pop_cond();
 depth--;
 
@@ -373,17 +367,11 @@ exp //MODIFIER PAR Yas
 | PO exp PF                   {$$ = $2;}
 | ID                          {attribute a = get_symbol_value($1);
     if (!a) yyerror("Variable non déclarée");
-    if (a->depth == depth) {
-        // locale
-        printf("LOADBP\n");
-        printf("SHIFT(%d)\n", a->offset);
-        printf("LOAD\n");
-    } else {
-        // globale
+    
        
         printf("LOADI(%d)\n", a->offset);
-        printf("LOAD\n");
-    }
+       printf("LOAD\n");
+   
     $$ = a->type;}
 | app                         {}
 | NUM  { printf("LOADI(%d)\n",$<int_value>1); $$=INT; }
