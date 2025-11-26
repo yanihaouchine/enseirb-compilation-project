@@ -12,11 +12,7 @@ void yyerror (char* s) {
   printf ("%s\n",s);
   exit(0);
   }
-int makeNum ()
-{
-  static int n = -1;
-  return ++n;
-}
+
 
 int depth=0; // block depth
 int current_type = 0; // type courant pour add_global_variable() //Modifier par yasmine
@@ -151,7 +147,15 @@ params: type ID vir params     {} // récursion droite pour numéroter les param
 vir : VIR                      {}
 ;
 
-fun_body : fao block faf       {}
+fun_body :fao {
+    printf("void pcode_main() {\n");
+    depth = 1;
+    current_offset = 1;
+}
+block
+faf {
+    printf("}\n");
+};
 ;
 
 fao : AO                       {}
@@ -193,6 +197,7 @@ if (a->type == INT) {
     printf("LOADF(0.0)\n\n");
 }
 
+
 }
 | ID {
 attribute a = new_attribute();
@@ -201,8 +206,6 @@ a->depth = depth;
 a->offset = current_offset++;
 set_symbol_value($<string_value>1, a);
 
-printf("// Declare %s of type %s with offset %d at depth %d\n",
-       $<string_value>1, type2string(a->type), a->offset, a->depth);
 
 if (a->type == INT) {
     printf("LOADI(0)\n\n");
@@ -269,22 +272,48 @@ af : AF                       {printf("RESTOREBP \n");
 
 // Affectation : aff //MODIFER par Yasmine
 aff : ID EQ exp {
-attribute a = get_symbol_value($1);
-if (!a) yyerror("Variable non déclarée");
-if(a->type == FLOAT && $3 == INT) {
-    printf("I2F2\n");   // conversion de l'exp vers float
-} else if(a->type == INT && $3 == FLOAT) {
-    printf("F2I1\n");   // conversion de l'exp vers int
+    attribute a = get_symbol_value($1);
+    if (!a) yyerror("Variable non déclarée");
+
+    /* Conversion INT <-> FLOAT */
+    if (a->type == FLOAT && $3 == INT)
+        printf("I2F2\n");
+    else if (a->type == INT && $3 == FLOAT)
+        printf("F2I1\n");
+
+    if (a->depth != depth) {
+      // VARIABLE GLOBALE
+      if(a->depth<depth  ){
+        if(a->depth !=0){
+        printf("LOADBP\n");
+        printf("LOAD\n");
+        printf("SHIFT(%d) \n",
+               a->offset);
+        }else{
+          printf("LOADI(%i)\n",a->offset);
+        }
+        
+      }
+     
+        
+    } else {
+        // VARIABLE LOCALE 
+        
+        printf("LOADBP\n");
+
+        /* Remonter les blocs */
+        int d = depth - a->depth;
+        for (int i = 0; i < d; i++)
+            printf("LOAD ");
+
+        printf("SHIFT(%d) \n",
+               a->offset);
+    }
+
+    printf("STORE\n");
 }
+;
 
-    printf("LOADI(%d)\n", a->offset);
-    
-
-
-
-
-
-};
 
 
 
@@ -365,14 +394,30 @@ exp //MODIFIER PAR Yas
 | exp STAR exp                { $$ = make_code_arith($1, STAR, $3);}
 | exp DIV  exp                {$$ = make_code_arith($1, DIV, $3);}
 | PO exp PF                   {$$ = $2;}
-| ID                          {attribute a = get_symbol_value($1);
+| ID {
+    attribute a = get_symbol_value($1);
     if (!a) yyerror("Variable non déclarée");
-    
-       
-        printf("LOADI(%d)\n", a->offset);
-       printf("LOAD\n");
-   
-    $$ = a->type;}
+
+    if (a->depth !=depth) {
+        // VARIABLE GLOBALE 
+        printf("LOADI(%d) \n", a->offset);
+        printf("LOAD\n");
+    } else {
+        // VARIABLE LOCALE
+        printf("LOADBP\n");
+
+        /* Remonter les blocs */
+        int d = depth - a->depth;
+        for (int i = 0; i < d; i++)
+            printf("LOAD" );
+
+        printf("SHIFT(%d)\n",a->offset);
+        printf("LOAD\n");
+    }
+
+    $$ = a->type;
+}
+
 | app                         {}
 | NUM  { printf("LOADI(%d)\n",$<int_value>1); $$=INT; }
 | DEC  { printf("LOADF(%f)\n",$<float_value>1); $$=FLOAT; }
@@ -430,9 +475,8 @@ pcode_main();\n\
 return stack[sp-1].int_value;\n\
 }\n\
 \n";  
-
 printf("%s\n",header); // ouput header
- 
+
 return yyparse (); // output your compilation
  
  

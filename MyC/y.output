@@ -30,130 +30,132 @@ Grammar
 
    13 vir: VIR
 
-   14 fun_body: fao block faf
+   14 $@1: ε
 
-   15 fao: AO
+   15 fun_body: fao $@1 block faf
 
-   16 faf: AF
+   16 fao: AO
 
-   17 block: decl_list inst_list
+   17 faf: AF
 
-   18 decl_list: decl_list decl PV
-   19          | ε
+   18 block: decl_list inst_list
 
-   20 decl: var_decl
+   19 decl_list: decl_list decl PV
+   20          | ε
 
-   21 var_decl: type vlist
+   21 decl: var_decl
 
-   22 vlist: vlist vir ID
-   23      | ID
+   22 var_decl: type vlist
 
-   24 type: typename
+   23 vlist: vlist vir ID
+   24      | ID
 
-   25 typename: INT
-   26         | FLOAT
-   27         | VOID
+   25 type: typename
 
-   28 inst_list: inst_list inst
-   29          | inst
+   26 typename: INT
+   27         | FLOAT
+   28         | VOID
 
-   30 pv: PV
+   29 inst_list: inst_list inst
+   30          | inst
 
-   31 inst: ao block af
-   32     | exp pv
-   33     | aff pv
-   34     | ret pv
-   35     | cond
-   36     | loop
-   37     | pv
+   31 pv: PV
 
-   38 ao: AO
+   32 inst: ao block af
+   33     | exp pv
+   34     | aff pv
+   35     | ret pv
+   36     | cond
+   37     | loop
+   38     | pv
 
-   39 af: AF
+   39 ao: AO
 
-   40 aff: ID EQ exp
+   40 af: AF
 
-   41 ret: RETURN exp
-   42    | RETURN PO PF
+   41 aff: ID EQ exp
 
-   43 cond: if bool_cond inst elsop
+   42 ret: RETURN exp
+   43    | RETURN PO PF
 
-   44 elsop: else inst
-   45      | ε
+   44 cond: if bool_cond inst elsop
 
-   46 bool_cond: PO exp PF
+   45 elsop: else inst
+   46      | ε
 
-   47 if: IF
+   47 bool_cond: PO exp PF
 
-   48 else: ELSE
+   48 if: IF
 
-   49 loop: while while_cond inst
+   49 else: ELSE
 
-   50 while_cond: PO exp PF
+   50 loop: while while_cond inst
 
-   51 while: WHILE
+   51 while_cond: PO exp PF
 
-   52 exp: MOINS exp
-   53    | exp PLUS exp
-   54    | exp MOINS exp
-   55    | exp STAR exp
-   56    | exp DIV exp
-   57    | PO exp PF
-   58    | ID
-   59    | app
-   60    | NUM
-   61    | DEC
-   62    | NOT exp
-   63    | exp INF exp
-   64    | exp SUP exp
-   65    | exp EQUAL exp
-   66    | exp DIFF exp
-   67    | exp AND exp
-   68    | exp OR exp
+   52 while: WHILE
 
-   69 app: fid PO args PF
+   53 exp: MOINS exp
+   54    | exp PLUS exp
+   55    | exp MOINS exp
+   56    | exp STAR exp
+   57    | exp DIV exp
+   58    | PO exp PF
+   59    | ID
+   60    | app
+   61    | NUM
+   62    | DEC
+   63    | NOT exp
+   64    | exp INF exp
+   65    | exp SUP exp
+   66    | exp EQUAL exp
+   67    | exp DIFF exp
+   68    | exp AND exp
+   69    | exp OR exp
 
-   70 fid: ID
+   70 app: fid PO args PF
 
-   71 args: arglist
-   72     | ε
+   71 fid: ID
 
-   73 arglist: arglist VIR exp
-   74        | exp
+   72 args: arglist
+   73     | ε
+
+   74 arglist: arglist VIR exp
+   75        | exp
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
     error (256)
-    NUM <int_value> (258) 60
-    DEC <float_value> (259) 61
-    INT (260) 25
-    FLOAT (261) 26
-    VOID (262) 27
-    ID <string_value> (263) 9 10 11 12 22 23 40 58 70
-    AO (264) 15 38
-    AF (265) 16 39
-    PO (266) 8 42 46 50 57 69
-    PF (267) 9 10 42 46 50 57 69
-    PV (268) 3 18 30
-    VIR (269) 13 73
-    RETURN (270) 41 42
-    EQ (271) 40
-    IF <label_value> (272) 47
-    ELSE <label_value> (273) 48
-    WHILE <label_value> (274) 51
-    AND <label_value> (275) 67
-    OR <label_value> (276) 68
-    NOT <label_value> (277) 62
-    DIFF <label_value> (278) 66
-    EQUAL <label_value> (279) 65
-    SUP <label_value> (280) 64
-    INF <label_value> (281) 63
-    PLUS (282) 53
-    MOINS (283) 52 54
-    STAR (284) 55
-    DIV (285) 56
+    NUM <int_value> (258) 61
+    DEC <float_value> (259) 62
+    INT (260) 26
+    FLOAT (261) 27
+    VOID (262) 28
+    ID <string_value> (263) 9 10 11 12 23 24 41 59 71
+    AO (264) 16 39
+    AF (265) 17 40
+    PO (266) 8 43 47 51 58 70
+    PF (267) 9 10 43 47 51 58 70
+    PV (268) 3 19 31
+    VIR (269) 13 74
+    RETURN (270) 42 43
+    EQ (271) 41
+    IF <label_value> (272) 48
+    ELSE <label_value> (273) 49
+    WHILE <label_value> (274) 52
+    AND <label_value> (275) 68
+    OR <label_value> (276) 69
+    NOT <label_value> (277) 63
+    DIFF <label_value> (278) 67
+    EQUAL <label_value> (279) 66
+    SUP <label_value> (280) 65
+    INF <label_value> (281) 64
+    PLUS (282) 54
+    MOINS (283) 53 55
+    STAR (284) 56
+    DIV (285) 57
     DOT (286)
     ARR (287)
     IFX (288)
@@ -190,97 +192,100 @@ Nonterminals, with rules where they appear
         on right: 10 11
     vir (44)
         on left: 13
-        on right: 11 22
+        on right: 11 23
     fun_body (45)
-        on left: 14
-        on right: 7
-    fao (46)
         on left: 15
-        on right: 14
-    faf (47)
+        on right: 7
+    $@1 (46)
+        on left: 14
+        on right: 15
+    fao (47)
         on left: 16
-        on right: 14
-    block (48)
+        on right: 15
+    faf (48)
         on left: 17
-        on right: 14 31
-    decl_list (49)
-        on left: 18 19
-        on right: 17 18
-    decl (50)
-        on left: 20
-        on right: 3 18
-    var_decl (51)
+        on right: 15
+    block (49)
+        on left: 18
+        on right: 15 32
+    decl_list (50)
+        on left: 19 20
+        on right: 18 19
+    decl (51)
         on left: 21
-        on right: 20
-    vlist (52)
-        on left: 22 23
-        on right: 21 22
-    type <type_value> (53)
-        on left: 24
-        on right: 7 11 12 21
-    typename <type_value> (54)
-        on left: 25 26 27
-        on right: 24
-    inst_list (55)
-        on left: 28 29
-        on right: 17 28
-    pv (56)
-        on left: 30
-        on right: 32 33 34 37
-    inst (57)
-        on left: 31 32 33 34 35 36 37
-        on right: 28 29 43 44 49
-    ao (58)
-        on left: 38
-        on right: 31
-    af (59)
+        on right: 3 19
+    var_decl (52)
+        on left: 22
+        on right: 21
+    vlist (53)
+        on left: 23 24
+        on right: 22 23
+    type <type_value> (54)
+        on left: 25
+        on right: 7 11 12 22
+    typename <type_value> (55)
+        on left: 26 27 28
+        on right: 25
+    inst_list (56)
+        on left: 29 30
+        on right: 18 29
+    pv (57)
+        on left: 31
+        on right: 33 34 35 38
+    inst (58)
+        on left: 32 33 34 35 36 37 38
+        on right: 29 30 44 45 50
+    ao (59)
         on left: 39
-        on right: 31
-    aff (60)
+        on right: 32
+    af (60)
         on left: 40
-        on right: 33
-    ret (61)
-        on left: 41 42
+        on right: 32
+    aff (61)
+        on left: 41
         on right: 34
-    cond (62)
-        on left: 43
+    ret (62)
+        on left: 42 43
         on right: 35
-    elsop (63)
-        on left: 44 45
-        on right: 43
-    bool_cond (64)
-        on left: 46
-        on right: 43
-    if (65)
+    cond (63)
+        on left: 44
+        on right: 36
+    elsop (64)
+        on left: 45 46
+        on right: 44
+    bool_cond (65)
         on left: 47
-        on right: 43
-    else (66)
+        on right: 44
+    if (66)
         on left: 48
         on right: 44
-    loop (67)
+    else (67)
         on left: 49
-        on right: 36
-    while_cond (68)
+        on right: 45
+    loop (68)
         on left: 50
-        on right: 49
-    while (69)
+        on right: 37
+    while_cond (69)
         on left: 51
-        on right: 49
-    exp <type_value> (70)
-        on left: 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68
-        on right: 32 40 41 46 50 52 53 54 55 56 57 62 63 64 65 66 67 68 73 74
-    app (71)
-        on left: 69
-        on right: 59
-    fid (72)
+        on right: 50
+    while (70)
+        on left: 52
+        on right: 50
+    exp <type_value> (71)
+        on left: 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69
+        on right: 33 41 42 47 51 53 54 55 56 57 58 63 64 65 66 67 68 69 74 75
+    app (72)
         on left: 70
-        on right: 69
-    args (73)
-        on left: 71 72
-        on right: 69
-    arglist (74)
-        on left: 73 74
-        on right: 71 73
+        on right: 60
+    fid (73)
+        on left: 71
+        on right: 70
+    args (74)
+        on left: 72 73
+        on right: 70
+    arglist (75)
+        on left: 74 75
+        on right: 72 74
 
 
 State 0
@@ -334,23 +339,23 @@ State 4
 
 State 5
 
-   25 typename: INT •
-
-    $default  reduce using rule 25 (typename)
-
-
-State 6
-
-   26 typename: FLOAT •
+   26 typename: INT •
 
     $default  reduce using rule 26 (typename)
 
 
-State 7
+State 6
 
-   27 typename: VOID •
+   27 typename: FLOAT •
 
     $default  reduce using rule 27 (typename)
+
+
+State 7
+
+   28 typename: VOID •
+
+    $default  reduce using rule 28 (typename)
 
 
 State 8
@@ -385,15 +390,15 @@ State 10
 
 State 11
 
-   20 decl: var_decl •
+   21 decl: var_decl •
 
-    $default  reduce using rule 20 (decl)
+    $default  reduce using rule 21 (decl)
 
 
 State 12
 
     7 fun: type • fun_head fun_body
-   21 var_decl: type • vlist
+   22 var_decl: type • vlist
 
     ID  shift, and go to state 17
 
@@ -403,9 +408,9 @@ State 12
 
 State 13
 
-   24 type: typename •
+   25 type: typename •
 
-    $default  reduce using rule 24 (type)
+    $default  reduce using rule 25 (type)
 
 
 State 14
@@ -435,11 +440,11 @@ State 17
 
     9 fun_head: ID • po PF
    10         | ID • po params PF
-   23 vlist: ID •
+   24 vlist: ID •
 
     PO  shift, and go to state 21
 
-    $default  reduce using rule 23 (vlist)
+    $default  reduce using rule 24 (vlist)
 
     po  go to state 22
 
@@ -456,12 +461,12 @@ State 18
 
 State 19
 
-   21 var_decl: type vlist •
-   22 vlist: vlist • vir ID
+   22 var_decl: type vlist •
+   23 vlist: vlist • vir ID
 
     VIR  shift, and go to state 26
 
-    $default  reduce using rule 21 (var_decl)
+    $default  reduce using rule 22 (var_decl)
 
     vir  go to state 27
 
@@ -500,9 +505,9 @@ State 22
 
 State 23
 
-   15 fao: AO •
+   16 fao: AO •
 
-    $default  reduce using rule 15 (fao)
+    $default  reduce using rule 16 (fao)
 
 
 State 24
@@ -514,12 +519,11 @@ State 24
 
 State 25
 
-   14 fun_body: fao • block faf
+   15 fun_body: fao • $@1 block faf
 
-    $default  reduce using rule 19 (decl_list)
+    $default  reduce using rule 14 ($@1)
 
-    block      go to state 31
-    decl_list  go to state 32
+    $@1  go to state 31
 
 
 State 26
@@ -531,9 +535,9 @@ State 26
 
 State 27
 
-   22 vlist: vlist vir • ID
+   23 vlist: vlist vir • ID
 
-    ID  shift, and go to state 33
+    ID  shift, and go to state 32
 
 
 State 28
@@ -547,7 +551,7 @@ State 29
 
    10 fun_head: ID po params • PF
 
-    PF  shift, and go to state 34
+    PF  shift, and go to state 33
 
 
 State 30
@@ -555,72 +559,34 @@ State 30
    11 params: type • ID vir params
    12       | type • ID
 
-    ID  shift, and go to state 35
+    ID  shift, and go to state 34
 
 
 State 31
 
-   14 fun_body: fao block • faf
+   15 fun_body: fao $@1 • block faf
 
-    AF  shift, and go to state 36
+    $default  reduce using rule 20 (decl_list)
 
-    faf  go to state 37
+    block      go to state 35
+    decl_list  go to state 36
 
 
 State 32
 
-   17 block: decl_list • inst_list
-   18 decl_list: decl_list • decl PV
+   23 vlist: vlist vir ID •
 
-    NUM     shift, and go to state 38
-    DEC     shift, and go to state 39
-    INT     shift, and go to state 5
-    FLOAT   shift, and go to state 6
-    VOID    shift, and go to state 7
-    ID      shift, and go to state 40
-    AO      shift, and go to state 41
-    PO      shift, and go to state 42
-    PV      shift, and go to state 43
-    RETURN  shift, and go to state 44
-    IF      shift, and go to state 45
-    WHILE   shift, and go to state 46
-    NOT     shift, and go to state 47
-    MOINS   shift, and go to state 48
-
-    decl       go to state 49
-    var_decl   go to state 11
-    type       go to state 50
-    typename   go to state 13
-    inst_list  go to state 51
-    pv         go to state 52
-    inst       go to state 53
-    ao         go to state 54
-    aff        go to state 55
-    ret        go to state 56
-    cond       go to state 57
-    if         go to state 58
-    loop       go to state 59
-    while      go to state 60
-    exp        go to state 61
-    app        go to state 62
-    fid        go to state 63
+    $default  reduce using rule 23 (vlist)
 
 
 State 33
-
-   22 vlist: vlist vir ID •
-
-    $default  reduce using rule 22 (vlist)
-
-
-State 34
 
    10 fun_head: ID po params PF •
 
     $default  reduce using rule 10 (fun_head)
 
 
-State 35
+State 34
 
    11 params: type ID • vir params
    12       | type ID •
@@ -629,309 +595,58 @@ State 35
 
     $default  reduce using rule 12 (params)
 
-    vir  go to state 64
+    vir  go to state 37
+
+
+State 35
+
+   15 fun_body: fao $@1 block • faf
+
+    AF  shift, and go to state 38
+
+    faf  go to state 39
 
 
 State 36
 
-   16 faf: AF •
+   18 block: decl_list • inst_list
+   19 decl_list: decl_list • decl PV
 
-    $default  reduce using rule 16 (faf)
+    NUM     shift, and go to state 40
+    DEC     shift, and go to state 41
+    INT     shift, and go to state 5
+    FLOAT   shift, and go to state 6
+    VOID    shift, and go to state 7
+    ID      shift, and go to state 42
+    AO      shift, and go to state 43
+    PO      shift, and go to state 44
+    PV      shift, and go to state 45
+    RETURN  shift, and go to state 46
+    IF      shift, and go to state 47
+    WHILE   shift, and go to state 48
+    NOT     shift, and go to state 49
+    MOINS   shift, and go to state 50
+
+    decl       go to state 51
+    var_decl   go to state 11
+    type       go to state 52
+    typename   go to state 13
+    inst_list  go to state 53
+    pv         go to state 54
+    inst       go to state 55
+    ao         go to state 56
+    aff        go to state 57
+    ret        go to state 58
+    cond       go to state 59
+    if         go to state 60
+    loop       go to state 61
+    while      go to state 62
+    exp        go to state 63
+    app        go to state 64
+    fid        go to state 65
 
 
 State 37
-
-   14 fun_body: fao block faf •
-
-    $default  reduce using rule 14 (fun_body)
-
-
-State 38
-
-   60 exp: NUM •
-
-    $default  reduce using rule 60 (exp)
-
-
-State 39
-
-   61 exp: DEC •
-
-    $default  reduce using rule 61 (exp)
-
-
-State 40
-
-   40 aff: ID • EQ exp
-   58 exp: ID •
-   70 fid: ID •
-
-    EQ  shift, and go to state 65
-
-    PO        reduce using rule 70 (fid)
-    $default  reduce using rule 58 (exp)
-
-
-State 41
-
-   38 ao: AO •
-
-    $default  reduce using rule 38 (ao)
-
-
-State 42
-
-   57 exp: PO • exp PF
-
-    NUM    shift, and go to state 38
-    DEC    shift, and go to state 39
-    ID     shift, and go to state 66
-    PO     shift, and go to state 42
-    NOT    shift, and go to state 47
-    MOINS  shift, and go to state 48
-
-    exp  go to state 67
-    app  go to state 62
-    fid  go to state 63
-
-
-State 43
-
-   30 pv: PV •
-
-    $default  reduce using rule 30 (pv)
-
-
-State 44
-
-   41 ret: RETURN • exp
-   42    | RETURN • PO PF
-
-    NUM    shift, and go to state 38
-    DEC    shift, and go to state 39
-    ID     shift, and go to state 66
-    PO     shift, and go to state 68
-    NOT    shift, and go to state 47
-    MOINS  shift, and go to state 48
-
-    exp  go to state 69
-    app  go to state 62
-    fid  go to state 63
-
-
-State 45
-
-   47 if: IF •
-
-    $default  reduce using rule 47 (if)
-
-
-State 46
-
-   51 while: WHILE •
-
-    $default  reduce using rule 51 (while)
-
-
-State 47
-
-   62 exp: NOT • exp
-
-    NUM    shift, and go to state 38
-    DEC    shift, and go to state 39
-    ID     shift, and go to state 66
-    PO     shift, and go to state 42
-    NOT    shift, and go to state 47
-    MOINS  shift, and go to state 48
-
-    exp  go to state 70
-    app  go to state 62
-    fid  go to state 63
-
-
-State 48
-
-   52 exp: MOINS • exp
-
-    NUM    shift, and go to state 38
-    DEC    shift, and go to state 39
-    ID     shift, and go to state 66
-    PO     shift, and go to state 42
-    NOT    shift, and go to state 47
-    MOINS  shift, and go to state 48
-
-    exp  go to state 71
-    app  go to state 62
-    fid  go to state 63
-
-
-State 49
-
-   18 decl_list: decl_list decl • PV
-
-    PV  shift, and go to state 72
-
-
-State 50
-
-   21 var_decl: type • vlist
-
-    ID  shift, and go to state 73
-
-    vlist  go to state 19
-
-
-State 51
-
-   17 block: decl_list inst_list •
-   28 inst_list: inst_list • inst
-
-    NUM     shift, and go to state 38
-    DEC     shift, and go to state 39
-    ID      shift, and go to state 40
-    AO      shift, and go to state 41
-    PO      shift, and go to state 42
-    PV      shift, and go to state 43
-    RETURN  shift, and go to state 44
-    IF      shift, and go to state 45
-    WHILE   shift, and go to state 46
-    NOT     shift, and go to state 47
-    MOINS   shift, and go to state 48
-
-    $default  reduce using rule 17 (block)
-
-    pv     go to state 52
-    inst   go to state 74
-    ao     go to state 54
-    aff    go to state 55
-    ret    go to state 56
-    cond   go to state 57
-    if     go to state 58
-    loop   go to state 59
-    while  go to state 60
-    exp    go to state 61
-    app    go to state 62
-    fid    go to state 63
-
-
-State 52
-
-   37 inst: pv •
-
-    $default  reduce using rule 37 (inst)
-
-
-State 53
-
-   29 inst_list: inst •
-
-    $default  reduce using rule 29 (inst_list)
-
-
-State 54
-
-   31 inst: ao • block af
-
-    $default  reduce using rule 19 (decl_list)
-
-    block      go to state 75
-    decl_list  go to state 32
-
-
-State 55
-
-   33 inst: aff • pv
-
-    PV  shift, and go to state 43
-
-    pv  go to state 76
-
-
-State 56
-
-   34 inst: ret • pv
-
-    PV  shift, and go to state 43
-
-    pv  go to state 77
-
-
-State 57
-
-   35 inst: cond •
-
-    $default  reduce using rule 35 (inst)
-
-
-State 58
-
-   43 cond: if • bool_cond inst elsop
-
-    PO  shift, and go to state 78
-
-    bool_cond  go to state 79
-
-
-State 59
-
-   36 inst: loop •
-
-    $default  reduce using rule 36 (inst)
-
-
-State 60
-
-   49 loop: while • while_cond inst
-
-    PO  shift, and go to state 80
-
-    while_cond  go to state 81
-
-
-State 61
-
-   32 inst: exp • pv
-   53 exp: exp • PLUS exp
-   54    | exp • MOINS exp
-   55    | exp • STAR exp
-   56    | exp • DIV exp
-   63    | exp • INF exp
-   64    | exp • SUP exp
-   65    | exp • EQUAL exp
-   66    | exp • DIFF exp
-   67    | exp • AND exp
-   68    | exp • OR exp
-
-    PV     shift, and go to state 43
-    AND    shift, and go to state 82
-    OR     shift, and go to state 83
-    DIFF   shift, and go to state 84
-    EQUAL  shift, and go to state 85
-    SUP    shift, and go to state 86
-    INF    shift, and go to state 87
-    PLUS   shift, and go to state 88
-    MOINS  shift, and go to state 89
-    STAR   shift, and go to state 90
-    DIV    shift, and go to state 91
-
-    pv  go to state 92
-
-
-State 62
-
-   59 exp: app •
-
-    $default  reduce using rule 59 (exp)
-
-
-State 63
-
-   69 app: fid • PO args PF
-
-    PO  shift, and go to state 93
-
-
-State 64
 
    11 params: type ID vir • params
 
@@ -939,973 +654,1272 @@ State 64
     FLOAT  shift, and go to state 6
     VOID   shift, and go to state 7
 
-    params    go to state 94
+    params    go to state 66
     type      go to state 30
     typename  go to state 13
 
 
-State 65
+State 38
 
-   40 aff: ID EQ • exp
+   17 faf: AF •
 
-    NUM    shift, and go to state 38
-    DEC    shift, and go to state 39
-    ID     shift, and go to state 66
-    PO     shift, and go to state 42
-    NOT    shift, and go to state 47
-    MOINS  shift, and go to state 48
-
-    exp  go to state 95
-    app  go to state 62
-    fid  go to state 63
+    $default  reduce using rule 17 (faf)
 
 
-State 66
+State 39
 
-   58 exp: ID •
-   70 fid: ID •
+   15 fun_body: fao $@1 block faf •
 
-    PO        reduce using rule 70 (fid)
-    $default  reduce using rule 58 (exp)
+    $default  reduce using rule 15 (fun_body)
 
 
-State 67
+State 40
 
-   53 exp: exp • PLUS exp
-   54    | exp • MOINS exp
-   55    | exp • STAR exp
-   56    | exp • DIV exp
-   57    | PO exp • PF
-   63    | exp • INF exp
-   64    | exp • SUP exp
-   65    | exp • EQUAL exp
-   66    | exp • DIFF exp
-   67    | exp • AND exp
-   68    | exp • OR exp
+   61 exp: NUM •
 
-    PF     shift, and go to state 96
-    AND    shift, and go to state 82
-    OR     shift, and go to state 83
-    DIFF   shift, and go to state 84
-    EQUAL  shift, and go to state 85
-    SUP    shift, and go to state 86
-    INF    shift, and go to state 87
-    PLUS   shift, and go to state 88
-    MOINS  shift, and go to state 89
-    STAR   shift, and go to state 90
-    DIV    shift, and go to state 91
+    $default  reduce using rule 61 (exp)
 
 
-State 68
+State 41
 
-   42 ret: RETURN PO • PF
-   57 exp: PO • exp PF
-
-    NUM    shift, and go to state 38
-    DEC    shift, and go to state 39
-    ID     shift, and go to state 66
-    PO     shift, and go to state 42
-    PF     shift, and go to state 97
-    NOT    shift, and go to state 47
-    MOINS  shift, and go to state 48
-
-    exp  go to state 67
-    app  go to state 62
-    fid  go to state 63
-
-
-State 69
-
-   41 ret: RETURN exp •
-   53 exp: exp • PLUS exp
-   54    | exp • MOINS exp
-   55    | exp • STAR exp
-   56    | exp • DIV exp
-   63    | exp • INF exp
-   64    | exp • SUP exp
-   65    | exp • EQUAL exp
-   66    | exp • DIFF exp
-   67    | exp • AND exp
-   68    | exp • OR exp
-
-    AND    shift, and go to state 82
-    OR     shift, and go to state 83
-    DIFF   shift, and go to state 84
-    EQUAL  shift, and go to state 85
-    SUP    shift, and go to state 86
-    INF    shift, and go to state 87
-    PLUS   shift, and go to state 88
-    MOINS  shift, and go to state 89
-    STAR   shift, and go to state 90
-    DIV    shift, and go to state 91
-
-    $default  reduce using rule 41 (ret)
-
-
-State 70
-
-   53 exp: exp • PLUS exp
-   54    | exp • MOINS exp
-   55    | exp • STAR exp
-   56    | exp • DIV exp
-   62    | NOT exp •
-   63    | exp • INF exp
-   64    | exp • SUP exp
-   65    | exp • EQUAL exp
-   66    | exp • DIFF exp
-   67    | exp • AND exp
-   68    | exp • OR exp
+   62 exp: DEC •
 
     $default  reduce using rule 62 (exp)
 
 
-State 71
+State 42
 
-   52 exp: MOINS exp •
-   53    | exp • PLUS exp
-   54    | exp • MOINS exp
-   55    | exp • STAR exp
-   56    | exp • DIV exp
-   63    | exp • INF exp
-   64    | exp • SUP exp
-   65    | exp • EQUAL exp
-   66    | exp • DIFF exp
-   67    | exp • AND exp
-   68    | exp • OR exp
+   41 aff: ID • EQ exp
+   59 exp: ID •
+   71 fid: ID •
 
-    $default  reduce using rule 52 (exp)
+    EQ  shift, and go to state 67
 
+    PO        reduce using rule 71 (fid)
+    $default  reduce using rule 59 (exp)
 
-State 72
 
-   18 decl_list: decl_list decl PV •
+State 43
 
-    $default  reduce using rule 18 (decl_list)
+   39 ao: AO •
 
+    $default  reduce using rule 39 (ao)
 
-State 73
 
-   23 vlist: ID •
+State 44
 
-    $default  reduce using rule 23 (vlist)
+   58 exp: PO • exp PF
 
+    NUM    shift, and go to state 40
+    DEC    shift, and go to state 41
+    ID     shift, and go to state 68
+    PO     shift, and go to state 44
+    NOT    shift, and go to state 49
+    MOINS  shift, and go to state 50
 
-State 74
+    exp  go to state 69
+    app  go to state 64
+    fid  go to state 65
 
-   28 inst_list: inst_list inst •
 
-    $default  reduce using rule 28 (inst_list)
+State 45
 
+   31 pv: PV •
 
-State 75
+    $default  reduce using rule 31 (pv)
 
-   31 inst: ao block • af
 
-    AF  shift, and go to state 98
+State 46
 
-    af  go to state 99
+   42 ret: RETURN • exp
+   43    | RETURN • PO PF
 
+    NUM    shift, and go to state 40
+    DEC    shift, and go to state 41
+    ID     shift, and go to state 68
+    PO     shift, and go to state 70
+    NOT    shift, and go to state 49
+    MOINS  shift, and go to state 50
 
-State 76
+    exp  go to state 71
+    app  go to state 64
+    fid  go to state 65
 
-   33 inst: aff pv •
 
-    $default  reduce using rule 33 (inst)
+State 47
 
+   48 if: IF •
 
-State 77
+    $default  reduce using rule 48 (if)
 
-   34 inst: ret pv •
 
-    $default  reduce using rule 34 (inst)
+State 48
 
+   52 while: WHILE •
 
-State 78
+    $default  reduce using rule 52 (while)
 
-   46 bool_cond: PO • exp PF
 
-    NUM    shift, and go to state 38
-    DEC    shift, and go to state 39
-    ID     shift, and go to state 66
-    PO     shift, and go to state 42
-    NOT    shift, and go to state 47
-    MOINS  shift, and go to state 48
+State 49
 
-    exp  go to state 100
-    app  go to state 62
-    fid  go to state 63
+   63 exp: NOT • exp
 
+    NUM    shift, and go to state 40
+    DEC    shift, and go to state 41
+    ID     shift, and go to state 68
+    PO     shift, and go to state 44
+    NOT    shift, and go to state 49
+    MOINS  shift, and go to state 50
 
-State 79
+    exp  go to state 72
+    app  go to state 64
+    fid  go to state 65
 
-   43 cond: if bool_cond • inst elsop
 
-    NUM     shift, and go to state 38
-    DEC     shift, and go to state 39
-    ID      shift, and go to state 40
-    AO      shift, and go to state 41
-    PO      shift, and go to state 42
-    PV      shift, and go to state 43
-    RETURN  shift, and go to state 44
-    IF      shift, and go to state 45
-    WHILE   shift, and go to state 46
-    NOT     shift, and go to state 47
-    MOINS   shift, and go to state 48
+State 50
 
-    pv     go to state 52
-    inst   go to state 101
-    ao     go to state 54
-    aff    go to state 55
-    ret    go to state 56
-    cond   go to state 57
-    if     go to state 58
-    loop   go to state 59
-    while  go to state 60
-    exp    go to state 61
-    app    go to state 62
-    fid    go to state 63
+   53 exp: MOINS • exp
 
+    NUM    shift, and go to state 40
+    DEC    shift, and go to state 41
+    ID     shift, and go to state 68
+    PO     shift, and go to state 44
+    NOT    shift, and go to state 49
+    MOINS  shift, and go to state 50
 
-State 80
+    exp  go to state 73
+    app  go to state 64
+    fid  go to state 65
 
-   50 while_cond: PO • exp PF
 
-    NUM    shift, and go to state 38
-    DEC    shift, and go to state 39
-    ID     shift, and go to state 66
-    PO     shift, and go to state 42
-    NOT    shift, and go to state 47
-    MOINS  shift, and go to state 48
+State 51
 
-    exp  go to state 102
-    app  go to state 62
-    fid  go to state 63
+   19 decl_list: decl_list decl • PV
 
+    PV  shift, and go to state 74
 
-State 81
 
-   49 loop: while while_cond • inst
+State 52
 
-    NUM     shift, and go to state 38
-    DEC     shift, and go to state 39
-    ID      shift, and go to state 40
-    AO      shift, and go to state 41
-    PO      shift, and go to state 42
-    PV      shift, and go to state 43
-    RETURN  shift, and go to state 44
-    IF      shift, and go to state 45
-    WHILE   shift, and go to state 46
-    NOT     shift, and go to state 47
-    MOINS   shift, and go to state 48
+   22 var_decl: type • vlist
 
-    pv     go to state 52
-    inst   go to state 103
-    ao     go to state 54
-    aff    go to state 55
-    ret    go to state 56
-    cond   go to state 57
-    if     go to state 58
-    loop   go to state 59
-    while  go to state 60
-    exp    go to state 61
-    app    go to state 62
-    fid    go to state 63
+    ID  shift, and go to state 75
 
+    vlist  go to state 19
 
-State 82
 
-   67 exp: exp AND • exp
+State 53
 
-    NUM    shift, and go to state 38
-    DEC    shift, and go to state 39
-    ID     shift, and go to state 66
-    PO     shift, and go to state 42
-    NOT    shift, and go to state 47
-    MOINS  shift, and go to state 48
+   18 block: decl_list inst_list •
+   29 inst_list: inst_list • inst
 
-    exp  go to state 104
-    app  go to state 62
-    fid  go to state 63
+    NUM     shift, and go to state 40
+    DEC     shift, and go to state 41
+    ID      shift, and go to state 42
+    AO      shift, and go to state 43
+    PO      shift, and go to state 44
+    PV      shift, and go to state 45
+    RETURN  shift, and go to state 46
+    IF      shift, and go to state 47
+    WHILE   shift, and go to state 48
+    NOT     shift, and go to state 49
+    MOINS   shift, and go to state 50
 
+    $default  reduce using rule 18 (block)
 
-State 83
+    pv     go to state 54
+    inst   go to state 76
+    ao     go to state 56
+    aff    go to state 57
+    ret    go to state 58
+    cond   go to state 59
+    if     go to state 60
+    loop   go to state 61
+    while  go to state 62
+    exp    go to state 63
+    app    go to state 64
+    fid    go to state 65
 
-   68 exp: exp OR • exp
 
-    NUM    shift, and go to state 38
-    DEC    shift, and go to state 39
-    ID     shift, and go to state 66
-    PO     shift, and go to state 42
-    NOT    shift, and go to state 47
-    MOINS  shift, and go to state 48
+State 54
 
-    exp  go to state 105
-    app  go to state 62
-    fid  go to state 63
+   38 inst: pv •
 
+    $default  reduce using rule 38 (inst)
 
-State 84
 
-   66 exp: exp DIFF • exp
+State 55
 
-    NUM    shift, and go to state 38
-    DEC    shift, and go to state 39
-    ID     shift, and go to state 66
-    PO     shift, and go to state 42
-    NOT    shift, and go to state 47
-    MOINS  shift, and go to state 48
+   30 inst_list: inst •
 
-    exp  go to state 106
-    app  go to state 62
-    fid  go to state 63
+    $default  reduce using rule 30 (inst_list)
 
 
-State 85
+State 56
 
-   65 exp: exp EQUAL • exp
+   32 inst: ao • block af
 
-    NUM    shift, and go to state 38
-    DEC    shift, and go to state 39
-    ID     shift, and go to state 66
-    PO     shift, and go to state 42
-    NOT    shift, and go to state 47
-    MOINS  shift, and go to state 48
+    $default  reduce using rule 20 (decl_list)
 
-    exp  go to state 107
-    app  go to state 62
-    fid  go to state 63
+    block      go to state 77
+    decl_list  go to state 36
 
 
-State 86
+State 57
 
-   64 exp: exp SUP • exp
+   34 inst: aff • pv
 
-    NUM    shift, and go to state 38
-    DEC    shift, and go to state 39
-    ID     shift, and go to state 66
-    PO     shift, and go to state 42
-    NOT    shift, and go to state 47
-    MOINS  shift, and go to state 48
+    PV  shift, and go to state 45
 
-    exp  go to state 108
-    app  go to state 62
-    fid  go to state 63
+    pv  go to state 78
 
 
-State 87
+State 58
 
-   63 exp: exp INF • exp
+   35 inst: ret • pv
 
-    NUM    shift, and go to state 38
-    DEC    shift, and go to state 39
-    ID     shift, and go to state 66
-    PO     shift, and go to state 42
-    NOT    shift, and go to state 47
-    MOINS  shift, and go to state 48
+    PV  shift, and go to state 45
 
-    exp  go to state 109
-    app  go to state 62
-    fid  go to state 63
+    pv  go to state 79
 
 
-State 88
+State 59
 
-   53 exp: exp PLUS • exp
+   36 inst: cond •
 
-    NUM    shift, and go to state 38
-    DEC    shift, and go to state 39
-    ID     shift, and go to state 66
-    PO     shift, and go to state 42
-    NOT    shift, and go to state 47
-    MOINS  shift, and go to state 48
+    $default  reduce using rule 36 (inst)
 
-    exp  go to state 110
-    app  go to state 62
-    fid  go to state 63
 
+State 60
 
-State 89
+   44 cond: if • bool_cond inst elsop
 
-   54 exp: exp MOINS • exp
+    PO  shift, and go to state 80
 
-    NUM    shift, and go to state 38
-    DEC    shift, and go to state 39
-    ID     shift, and go to state 66
-    PO     shift, and go to state 42
-    NOT    shift, and go to state 47
-    MOINS  shift, and go to state 48
+    bool_cond  go to state 81
 
-    exp  go to state 111
-    app  go to state 62
-    fid  go to state 63
 
+State 61
 
-State 90
+   37 inst: loop •
 
-   55 exp: exp STAR • exp
+    $default  reduce using rule 37 (inst)
 
-    NUM    shift, and go to state 38
-    DEC    shift, and go to state 39
-    ID     shift, and go to state 66
-    PO     shift, and go to state 42
-    NOT    shift, and go to state 47
-    MOINS  shift, and go to state 48
 
-    exp  go to state 112
-    app  go to state 62
-    fid  go to state 63
+State 62
 
+   50 loop: while • while_cond inst
 
-State 91
+    PO  shift, and go to state 82
 
-   56 exp: exp DIV • exp
+    while_cond  go to state 83
 
-    NUM    shift, and go to state 38
-    DEC    shift, and go to state 39
-    ID     shift, and go to state 66
-    PO     shift, and go to state 42
-    NOT    shift, and go to state 47
-    MOINS  shift, and go to state 48
 
-    exp  go to state 113
-    app  go to state 62
-    fid  go to state 63
+State 63
 
+   33 inst: exp • pv
+   54 exp: exp • PLUS exp
+   55    | exp • MOINS exp
+   56    | exp • STAR exp
+   57    | exp • DIV exp
+   64    | exp • INF exp
+   65    | exp • SUP exp
+   66    | exp • EQUAL exp
+   67    | exp • DIFF exp
+   68    | exp • AND exp
+   69    | exp • OR exp
 
-State 92
+    PV     shift, and go to state 45
+    AND    shift, and go to state 84
+    OR     shift, and go to state 85
+    DIFF   shift, and go to state 86
+    EQUAL  shift, and go to state 87
+    SUP    shift, and go to state 88
+    INF    shift, and go to state 89
+    PLUS   shift, and go to state 90
+    MOINS  shift, and go to state 91
+    STAR   shift, and go to state 92
+    DIV    shift, and go to state 93
 
-   32 inst: exp pv •
+    pv  go to state 94
 
-    $default  reduce using rule 32 (inst)
 
+State 64
 
-State 93
+   60 exp: app •
 
-   69 app: fid PO • args PF
+    $default  reduce using rule 60 (exp)
 
-    NUM    shift, and go to state 38
-    DEC    shift, and go to state 39
-    ID     shift, and go to state 66
-    PO     shift, and go to state 42
-    NOT    shift, and go to state 47
-    MOINS  shift, and go to state 48
 
-    $default  reduce using rule 72 (args)
+State 65
 
-    exp      go to state 114
-    app      go to state 62
-    fid      go to state 63
-    args     go to state 115
-    arglist  go to state 116
+   70 app: fid • PO args PF
 
+    PO  shift, and go to state 95
 
-State 94
+
+State 66
 
    11 params: type ID vir params •
 
     $default  reduce using rule 11 (params)
 
 
-State 95
+State 67
 
-   40 aff: ID EQ exp •
-   53 exp: exp • PLUS exp
-   54    | exp • MOINS exp
-   55    | exp • STAR exp
-   56    | exp • DIV exp
-   63    | exp • INF exp
-   64    | exp • SUP exp
-   65    | exp • EQUAL exp
-   66    | exp • DIFF exp
-   67    | exp • AND exp
-   68    | exp • OR exp
+   41 aff: ID EQ • exp
 
-    AND    shift, and go to state 82
-    OR     shift, and go to state 83
-    DIFF   shift, and go to state 84
-    EQUAL  shift, and go to state 85
-    SUP    shift, and go to state 86
-    INF    shift, and go to state 87
-    PLUS   shift, and go to state 88
-    MOINS  shift, and go to state 89
-    STAR   shift, and go to state 90
-    DIV    shift, and go to state 91
+    NUM    shift, and go to state 40
+    DEC    shift, and go to state 41
+    ID     shift, and go to state 68
+    PO     shift, and go to state 44
+    NOT    shift, and go to state 49
+    MOINS  shift, and go to state 50
 
-    $default  reduce using rule 40 (aff)
+    exp  go to state 96
+    app  go to state 64
+    fid  go to state 65
 
 
-State 96
+State 68
 
-   57 exp: PO exp PF •
+   59 exp: ID •
+   71 fid: ID •
 
-    $default  reduce using rule 57 (exp)
+    PO        reduce using rule 71 (fid)
+    $default  reduce using rule 59 (exp)
 
 
-State 97
+State 69
 
-   42 ret: RETURN PO PF •
+   54 exp: exp • PLUS exp
+   55    | exp • MOINS exp
+   56    | exp • STAR exp
+   57    | exp • DIV exp
+   58    | PO exp • PF
+   64    | exp • INF exp
+   65    | exp • SUP exp
+   66    | exp • EQUAL exp
+   67    | exp • DIFF exp
+   68    | exp • AND exp
+   69    | exp • OR exp
+
+    PF     shift, and go to state 97
+    AND    shift, and go to state 84
+    OR     shift, and go to state 85
+    DIFF   shift, and go to state 86
+    EQUAL  shift, and go to state 87
+    SUP    shift, and go to state 88
+    INF    shift, and go to state 89
+    PLUS   shift, and go to state 90
+    MOINS  shift, and go to state 91
+    STAR   shift, and go to state 92
+    DIV    shift, and go to state 93
+
+
+State 70
+
+   43 ret: RETURN PO • PF
+   58 exp: PO • exp PF
+
+    NUM    shift, and go to state 40
+    DEC    shift, and go to state 41
+    ID     shift, and go to state 68
+    PO     shift, and go to state 44
+    PF     shift, and go to state 98
+    NOT    shift, and go to state 49
+    MOINS  shift, and go to state 50
+
+    exp  go to state 69
+    app  go to state 64
+    fid  go to state 65
+
+
+State 71
+
+   42 ret: RETURN exp •
+   54 exp: exp • PLUS exp
+   55    | exp • MOINS exp
+   56    | exp • STAR exp
+   57    | exp • DIV exp
+   64    | exp • INF exp
+   65    | exp • SUP exp
+   66    | exp • EQUAL exp
+   67    | exp • DIFF exp
+   68    | exp • AND exp
+   69    | exp • OR exp
+
+    AND    shift, and go to state 84
+    OR     shift, and go to state 85
+    DIFF   shift, and go to state 86
+    EQUAL  shift, and go to state 87
+    SUP    shift, and go to state 88
+    INF    shift, and go to state 89
+    PLUS   shift, and go to state 90
+    MOINS  shift, and go to state 91
+    STAR   shift, and go to state 92
+    DIV    shift, and go to state 93
 
     $default  reduce using rule 42 (ret)
 
 
+State 72
+
+   54 exp: exp • PLUS exp
+   55    | exp • MOINS exp
+   56    | exp • STAR exp
+   57    | exp • DIV exp
+   63    | NOT exp •
+   64    | exp • INF exp
+   65    | exp • SUP exp
+   66    | exp • EQUAL exp
+   67    | exp • DIFF exp
+   68    | exp • AND exp
+   69    | exp • OR exp
+
+    $default  reduce using rule 63 (exp)
+
+
+State 73
+
+   53 exp: MOINS exp •
+   54    | exp • PLUS exp
+   55    | exp • MOINS exp
+   56    | exp • STAR exp
+   57    | exp • DIV exp
+   64    | exp • INF exp
+   65    | exp • SUP exp
+   66    | exp • EQUAL exp
+   67    | exp • DIFF exp
+   68    | exp • AND exp
+   69    | exp • OR exp
+
+    $default  reduce using rule 53 (exp)
+
+
+State 74
+
+   19 decl_list: decl_list decl PV •
+
+    $default  reduce using rule 19 (decl_list)
+
+
+State 75
+
+   24 vlist: ID •
+
+    $default  reduce using rule 24 (vlist)
+
+
+State 76
+
+   29 inst_list: inst_list inst •
+
+    $default  reduce using rule 29 (inst_list)
+
+
+State 77
+
+   32 inst: ao block • af
+
+    AF  shift, and go to state 99
+
+    af  go to state 100
+
+
+State 78
+
+   34 inst: aff pv •
+
+    $default  reduce using rule 34 (inst)
+
+
+State 79
+
+   35 inst: ret pv •
+
+    $default  reduce using rule 35 (inst)
+
+
+State 80
+
+   47 bool_cond: PO • exp PF
+
+    NUM    shift, and go to state 40
+    DEC    shift, and go to state 41
+    ID     shift, and go to state 68
+    PO     shift, and go to state 44
+    NOT    shift, and go to state 49
+    MOINS  shift, and go to state 50
+
+    exp  go to state 101
+    app  go to state 64
+    fid  go to state 65
+
+
+State 81
+
+   44 cond: if bool_cond • inst elsop
+
+    NUM     shift, and go to state 40
+    DEC     shift, and go to state 41
+    ID      shift, and go to state 42
+    AO      shift, and go to state 43
+    PO      shift, and go to state 44
+    PV      shift, and go to state 45
+    RETURN  shift, and go to state 46
+    IF      shift, and go to state 47
+    WHILE   shift, and go to state 48
+    NOT     shift, and go to state 49
+    MOINS   shift, and go to state 50
+
+    pv     go to state 54
+    inst   go to state 102
+    ao     go to state 56
+    aff    go to state 57
+    ret    go to state 58
+    cond   go to state 59
+    if     go to state 60
+    loop   go to state 61
+    while  go to state 62
+    exp    go to state 63
+    app    go to state 64
+    fid    go to state 65
+
+
+State 82
+
+   51 while_cond: PO • exp PF
+
+    NUM    shift, and go to state 40
+    DEC    shift, and go to state 41
+    ID     shift, and go to state 68
+    PO     shift, and go to state 44
+    NOT    shift, and go to state 49
+    MOINS  shift, and go to state 50
+
+    exp  go to state 103
+    app  go to state 64
+    fid  go to state 65
+
+
+State 83
+
+   50 loop: while while_cond • inst
+
+    NUM     shift, and go to state 40
+    DEC     shift, and go to state 41
+    ID      shift, and go to state 42
+    AO      shift, and go to state 43
+    PO      shift, and go to state 44
+    PV      shift, and go to state 45
+    RETURN  shift, and go to state 46
+    IF      shift, and go to state 47
+    WHILE   shift, and go to state 48
+    NOT     shift, and go to state 49
+    MOINS   shift, and go to state 50
+
+    pv     go to state 54
+    inst   go to state 104
+    ao     go to state 56
+    aff    go to state 57
+    ret    go to state 58
+    cond   go to state 59
+    if     go to state 60
+    loop   go to state 61
+    while  go to state 62
+    exp    go to state 63
+    app    go to state 64
+    fid    go to state 65
+
+
+State 84
+
+   68 exp: exp AND • exp
+
+    NUM    shift, and go to state 40
+    DEC    shift, and go to state 41
+    ID     shift, and go to state 68
+    PO     shift, and go to state 44
+    NOT    shift, and go to state 49
+    MOINS  shift, and go to state 50
+
+    exp  go to state 105
+    app  go to state 64
+    fid  go to state 65
+
+
+State 85
+
+   69 exp: exp OR • exp
+
+    NUM    shift, and go to state 40
+    DEC    shift, and go to state 41
+    ID     shift, and go to state 68
+    PO     shift, and go to state 44
+    NOT    shift, and go to state 49
+    MOINS  shift, and go to state 50
+
+    exp  go to state 106
+    app  go to state 64
+    fid  go to state 65
+
+
+State 86
+
+   67 exp: exp DIFF • exp
+
+    NUM    shift, and go to state 40
+    DEC    shift, and go to state 41
+    ID     shift, and go to state 68
+    PO     shift, and go to state 44
+    NOT    shift, and go to state 49
+    MOINS  shift, and go to state 50
+
+    exp  go to state 107
+    app  go to state 64
+    fid  go to state 65
+
+
+State 87
+
+   66 exp: exp EQUAL • exp
+
+    NUM    shift, and go to state 40
+    DEC    shift, and go to state 41
+    ID     shift, and go to state 68
+    PO     shift, and go to state 44
+    NOT    shift, and go to state 49
+    MOINS  shift, and go to state 50
+
+    exp  go to state 108
+    app  go to state 64
+    fid  go to state 65
+
+
+State 88
+
+   65 exp: exp SUP • exp
+
+    NUM    shift, and go to state 40
+    DEC    shift, and go to state 41
+    ID     shift, and go to state 68
+    PO     shift, and go to state 44
+    NOT    shift, and go to state 49
+    MOINS  shift, and go to state 50
+
+    exp  go to state 109
+    app  go to state 64
+    fid  go to state 65
+
+
+State 89
+
+   64 exp: exp INF • exp
+
+    NUM    shift, and go to state 40
+    DEC    shift, and go to state 41
+    ID     shift, and go to state 68
+    PO     shift, and go to state 44
+    NOT    shift, and go to state 49
+    MOINS  shift, and go to state 50
+
+    exp  go to state 110
+    app  go to state 64
+    fid  go to state 65
+
+
+State 90
+
+   54 exp: exp PLUS • exp
+
+    NUM    shift, and go to state 40
+    DEC    shift, and go to state 41
+    ID     shift, and go to state 68
+    PO     shift, and go to state 44
+    NOT    shift, and go to state 49
+    MOINS  shift, and go to state 50
+
+    exp  go to state 111
+    app  go to state 64
+    fid  go to state 65
+
+
+State 91
+
+   55 exp: exp MOINS • exp
+
+    NUM    shift, and go to state 40
+    DEC    shift, and go to state 41
+    ID     shift, and go to state 68
+    PO     shift, and go to state 44
+    NOT    shift, and go to state 49
+    MOINS  shift, and go to state 50
+
+    exp  go to state 112
+    app  go to state 64
+    fid  go to state 65
+
+
+State 92
+
+   56 exp: exp STAR • exp
+
+    NUM    shift, and go to state 40
+    DEC    shift, and go to state 41
+    ID     shift, and go to state 68
+    PO     shift, and go to state 44
+    NOT    shift, and go to state 49
+    MOINS  shift, and go to state 50
+
+    exp  go to state 113
+    app  go to state 64
+    fid  go to state 65
+
+
+State 93
+
+   57 exp: exp DIV • exp
+
+    NUM    shift, and go to state 40
+    DEC    shift, and go to state 41
+    ID     shift, and go to state 68
+    PO     shift, and go to state 44
+    NOT    shift, and go to state 49
+    MOINS  shift, and go to state 50
+
+    exp  go to state 114
+    app  go to state 64
+    fid  go to state 65
+
+
+State 94
+
+   33 inst: exp pv •
+
+    $default  reduce using rule 33 (inst)
+
+
+State 95
+
+   70 app: fid PO • args PF
+
+    NUM    shift, and go to state 40
+    DEC    shift, and go to state 41
+    ID     shift, and go to state 68
+    PO     shift, and go to state 44
+    NOT    shift, and go to state 49
+    MOINS  shift, and go to state 50
+
+    $default  reduce using rule 73 (args)
+
+    exp      go to state 115
+    app      go to state 64
+    fid      go to state 65
+    args     go to state 116
+    arglist  go to state 117
+
+
+State 96
+
+   41 aff: ID EQ exp •
+   54 exp: exp • PLUS exp
+   55    | exp • MOINS exp
+   56    | exp • STAR exp
+   57    | exp • DIV exp
+   64    | exp • INF exp
+   65    | exp • SUP exp
+   66    | exp • EQUAL exp
+   67    | exp • DIFF exp
+   68    | exp • AND exp
+   69    | exp • OR exp
+
+    AND    shift, and go to state 84
+    OR     shift, and go to state 85
+    DIFF   shift, and go to state 86
+    EQUAL  shift, and go to state 87
+    SUP    shift, and go to state 88
+    INF    shift, and go to state 89
+    PLUS   shift, and go to state 90
+    MOINS  shift, and go to state 91
+    STAR   shift, and go to state 92
+    DIV    shift, and go to state 93
+
+    $default  reduce using rule 41 (aff)
+
+
+State 97
+
+   58 exp: PO exp PF •
+
+    $default  reduce using rule 58 (exp)
+
+
 State 98
 
-   39 af: AF •
+   43 ret: RETURN PO PF •
 
-    $default  reduce using rule 39 (af)
+    $default  reduce using rule 43 (ret)
 
 
 State 99
 
-   31 inst: ao block af •
+   40 af: AF •
 
-    $default  reduce using rule 31 (inst)
+    $default  reduce using rule 40 (af)
 
 
 State 100
 
-   46 bool_cond: PO exp • PF
-   53 exp: exp • PLUS exp
-   54    | exp • MOINS exp
-   55    | exp • STAR exp
-   56    | exp • DIV exp
-   63    | exp • INF exp
-   64    | exp • SUP exp
-   65    | exp • EQUAL exp
-   66    | exp • DIFF exp
-   67    | exp • AND exp
-   68    | exp • OR exp
+   32 inst: ao block af •
 
-    PF     shift, and go to state 117
-    AND    shift, and go to state 82
-    OR     shift, and go to state 83
-    DIFF   shift, and go to state 84
-    EQUAL  shift, and go to state 85
-    SUP    shift, and go to state 86
-    INF    shift, and go to state 87
-    PLUS   shift, and go to state 88
-    MOINS  shift, and go to state 89
-    STAR   shift, and go to state 90
-    DIV    shift, and go to state 91
+    $default  reduce using rule 32 (inst)
 
 
 State 101
 
-   43 cond: if bool_cond inst • elsop
+   47 bool_cond: PO exp • PF
+   54 exp: exp • PLUS exp
+   55    | exp • MOINS exp
+   56    | exp • STAR exp
+   57    | exp • DIV exp
+   64    | exp • INF exp
+   65    | exp • SUP exp
+   66    | exp • EQUAL exp
+   67    | exp • DIFF exp
+   68    | exp • AND exp
+   69    | exp • OR exp
 
-    ELSE  shift, and go to state 118
-
-    $default  reduce using rule 45 (elsop)
-
-    elsop  go to state 119
-    else   go to state 120
+    PF     shift, and go to state 118
+    AND    shift, and go to state 84
+    OR     shift, and go to state 85
+    DIFF   shift, and go to state 86
+    EQUAL  shift, and go to state 87
+    SUP    shift, and go to state 88
+    INF    shift, and go to state 89
+    PLUS   shift, and go to state 90
+    MOINS  shift, and go to state 91
+    STAR   shift, and go to state 92
+    DIV    shift, and go to state 93
 
 
 State 102
 
-   50 while_cond: PO exp • PF
-   53 exp: exp • PLUS exp
-   54    | exp • MOINS exp
-   55    | exp • STAR exp
-   56    | exp • DIV exp
-   63    | exp • INF exp
-   64    | exp • SUP exp
-   65    | exp • EQUAL exp
-   66    | exp • DIFF exp
-   67    | exp • AND exp
-   68    | exp • OR exp
+   44 cond: if bool_cond inst • elsop
 
-    PF     shift, and go to state 121
-    AND    shift, and go to state 82
-    OR     shift, and go to state 83
-    DIFF   shift, and go to state 84
-    EQUAL  shift, and go to state 85
-    SUP    shift, and go to state 86
-    INF    shift, and go to state 87
-    PLUS   shift, and go to state 88
-    MOINS  shift, and go to state 89
-    STAR   shift, and go to state 90
-    DIV    shift, and go to state 91
+    ELSE  shift, and go to state 119
+
+    $default  reduce using rule 46 (elsop)
+
+    elsop  go to state 120
+    else   go to state 121
 
 
 State 103
 
-   49 loop: while while_cond inst •
+   51 while_cond: PO exp • PF
+   54 exp: exp • PLUS exp
+   55    | exp • MOINS exp
+   56    | exp • STAR exp
+   57    | exp • DIV exp
+   64    | exp • INF exp
+   65    | exp • SUP exp
+   66    | exp • EQUAL exp
+   67    | exp • DIFF exp
+   68    | exp • AND exp
+   69    | exp • OR exp
 
-    $default  reduce using rule 49 (loop)
+    PF     shift, and go to state 122
+    AND    shift, and go to state 84
+    OR     shift, and go to state 85
+    DIFF   shift, and go to state 86
+    EQUAL  shift, and go to state 87
+    SUP    shift, and go to state 88
+    INF    shift, and go to state 89
+    PLUS   shift, and go to state 90
+    MOINS  shift, and go to state 91
+    STAR   shift, and go to state 92
+    DIV    shift, and go to state 93
 
 
 State 104
 
-   53 exp: exp • PLUS exp
-   54    | exp • MOINS exp
-   55    | exp • STAR exp
-   56    | exp • DIV exp
-   63    | exp • INF exp
-   64    | exp • SUP exp
-   65    | exp • EQUAL exp
-   66    | exp • DIFF exp
-   67    | exp • AND exp
-   67    | exp AND exp •
-   68    | exp • OR exp
+   50 loop: while while_cond inst •
 
-    DIFF   shift, and go to state 84
-    EQUAL  shift, and go to state 85
-    SUP    shift, and go to state 86
-    INF    shift, and go to state 87
-    PLUS   shift, and go to state 88
-    MOINS  shift, and go to state 89
-    STAR   shift, and go to state 90
-    DIV    shift, and go to state 91
-
-    $default  reduce using rule 67 (exp)
+    $default  reduce using rule 50 (loop)
 
 
 State 105
 
-   53 exp: exp • PLUS exp
-   54    | exp • MOINS exp
-   55    | exp • STAR exp
-   56    | exp • DIV exp
-   63    | exp • INF exp
-   64    | exp • SUP exp
-   65    | exp • EQUAL exp
-   66    | exp • DIFF exp
-   67    | exp • AND exp
-   68    | exp • OR exp
-   68    | exp OR exp •
+   54 exp: exp • PLUS exp
+   55    | exp • MOINS exp
+   56    | exp • STAR exp
+   57    | exp • DIV exp
+   64    | exp • INF exp
+   65    | exp • SUP exp
+   66    | exp • EQUAL exp
+   67    | exp • DIFF exp
+   68    | exp • AND exp
+   68    | exp AND exp •
+   69    | exp • OR exp
 
-    AND    shift, and go to state 82
-    DIFF   shift, and go to state 84
-    EQUAL  shift, and go to state 85
-    SUP    shift, and go to state 86
-    INF    shift, and go to state 87
-    PLUS   shift, and go to state 88
-    MOINS  shift, and go to state 89
-    STAR   shift, and go to state 90
-    DIV    shift, and go to state 91
+    DIFF   shift, and go to state 86
+    EQUAL  shift, and go to state 87
+    SUP    shift, and go to state 88
+    INF    shift, and go to state 89
+    PLUS   shift, and go to state 90
+    MOINS  shift, and go to state 91
+    STAR   shift, and go to state 92
+    DIV    shift, and go to state 93
 
     $default  reduce using rule 68 (exp)
 
 
 State 106
 
-   53 exp: exp • PLUS exp
-   54    | exp • MOINS exp
-   55    | exp • STAR exp
-   56    | exp • DIV exp
-   63    | exp • INF exp
-   64    | exp • SUP exp
-   65    | exp • EQUAL exp
-   66    | exp • DIFF exp
-   66    | exp DIFF exp •
-   67    | exp • AND exp
-   68    | exp • OR exp
+   54 exp: exp • PLUS exp
+   55    | exp • MOINS exp
+   56    | exp • STAR exp
+   57    | exp • DIV exp
+   64    | exp • INF exp
+   65    | exp • SUP exp
+   66    | exp • EQUAL exp
+   67    | exp • DIFF exp
+   68    | exp • AND exp
+   69    | exp • OR exp
+   69    | exp OR exp •
 
-    PLUS   shift, and go to state 88
-    MOINS  shift, and go to state 89
-    STAR   shift, and go to state 90
-    DIV    shift, and go to state 91
+    AND    shift, and go to state 84
+    DIFF   shift, and go to state 86
+    EQUAL  shift, and go to state 87
+    SUP    shift, and go to state 88
+    INF    shift, and go to state 89
+    PLUS   shift, and go to state 90
+    MOINS  shift, and go to state 91
+    STAR   shift, and go to state 92
+    DIV    shift, and go to state 93
 
-    $default  reduce using rule 66 (exp)
+    $default  reduce using rule 69 (exp)
 
 
 State 107
 
-   53 exp: exp • PLUS exp
-   54    | exp • MOINS exp
-   55    | exp • STAR exp
-   56    | exp • DIV exp
-   63    | exp • INF exp
-   64    | exp • SUP exp
-   65    | exp • EQUAL exp
-   65    | exp EQUAL exp •
-   66    | exp • DIFF exp
-   67    | exp • AND exp
-   68    | exp • OR exp
+   54 exp: exp • PLUS exp
+   55    | exp • MOINS exp
+   56    | exp • STAR exp
+   57    | exp • DIV exp
+   64    | exp • INF exp
+   65    | exp • SUP exp
+   66    | exp • EQUAL exp
+   67    | exp • DIFF exp
+   67    | exp DIFF exp •
+   68    | exp • AND exp
+   69    | exp • OR exp
 
-    PLUS   shift, and go to state 88
-    MOINS  shift, and go to state 89
-    STAR   shift, and go to state 90
-    DIV    shift, and go to state 91
+    PLUS   shift, and go to state 90
+    MOINS  shift, and go to state 91
+    STAR   shift, and go to state 92
+    DIV    shift, and go to state 93
 
-    $default  reduce using rule 65 (exp)
+    $default  reduce using rule 67 (exp)
 
 
 State 108
 
-   53 exp: exp • PLUS exp
-   54    | exp • MOINS exp
-   55    | exp • STAR exp
-   56    | exp • DIV exp
-   63    | exp • INF exp
-   64    | exp • SUP exp
-   64    | exp SUP exp •
-   65    | exp • EQUAL exp
-   66    | exp • DIFF exp
-   67    | exp • AND exp
-   68    | exp • OR exp
+   54 exp: exp • PLUS exp
+   55    | exp • MOINS exp
+   56    | exp • STAR exp
+   57    | exp • DIV exp
+   64    | exp • INF exp
+   65    | exp • SUP exp
+   66    | exp • EQUAL exp
+   66    | exp EQUAL exp •
+   67    | exp • DIFF exp
+   68    | exp • AND exp
+   69    | exp • OR exp
 
-    PLUS   shift, and go to state 88
-    MOINS  shift, and go to state 89
-    STAR   shift, and go to state 90
-    DIV    shift, and go to state 91
+    PLUS   shift, and go to state 90
+    MOINS  shift, and go to state 91
+    STAR   shift, and go to state 92
+    DIV    shift, and go to state 93
 
-    $default  reduce using rule 64 (exp)
+    $default  reduce using rule 66 (exp)
 
 
 State 109
 
-   53 exp: exp • PLUS exp
-   54    | exp • MOINS exp
-   55    | exp • STAR exp
-   56    | exp • DIV exp
-   63    | exp • INF exp
-   63    | exp INF exp •
-   64    | exp • SUP exp
-   65    | exp • EQUAL exp
-   66    | exp • DIFF exp
-   67    | exp • AND exp
-   68    | exp • OR exp
+   54 exp: exp • PLUS exp
+   55    | exp • MOINS exp
+   56    | exp • STAR exp
+   57    | exp • DIV exp
+   64    | exp • INF exp
+   65    | exp • SUP exp
+   65    | exp SUP exp •
+   66    | exp • EQUAL exp
+   67    | exp • DIFF exp
+   68    | exp • AND exp
+   69    | exp • OR exp
 
-    PLUS   shift, and go to state 88
-    MOINS  shift, and go to state 89
-    STAR   shift, and go to state 90
-    DIV    shift, and go to state 91
+    PLUS   shift, and go to state 90
+    MOINS  shift, and go to state 91
+    STAR   shift, and go to state 92
+    DIV    shift, and go to state 93
 
-    $default  reduce using rule 63 (exp)
+    $default  reduce using rule 65 (exp)
 
 
 State 110
 
-   53 exp: exp • PLUS exp
-   53    | exp PLUS exp •
-   54    | exp • MOINS exp
-   55    | exp • STAR exp
-   56    | exp • DIV exp
-   63    | exp • INF exp
-   64    | exp • SUP exp
-   65    | exp • EQUAL exp
-   66    | exp • DIFF exp
-   67    | exp • AND exp
-   68    | exp • OR exp
+   54 exp: exp • PLUS exp
+   55    | exp • MOINS exp
+   56    | exp • STAR exp
+   57    | exp • DIV exp
+   64    | exp • INF exp
+   64    | exp INF exp •
+   65    | exp • SUP exp
+   66    | exp • EQUAL exp
+   67    | exp • DIFF exp
+   68    | exp • AND exp
+   69    | exp • OR exp
 
-    STAR  shift, and go to state 90
-    DIV   shift, and go to state 91
+    PLUS   shift, and go to state 90
+    MOINS  shift, and go to state 91
+    STAR   shift, and go to state 92
+    DIV    shift, and go to state 93
 
-    $default  reduce using rule 53 (exp)
+    $default  reduce using rule 64 (exp)
 
 
 State 111
 
-   53 exp: exp • PLUS exp
-   54    | exp • MOINS exp
-   54    | exp MOINS exp •
-   55    | exp • STAR exp
-   56    | exp • DIV exp
-   63    | exp • INF exp
-   64    | exp • SUP exp
-   65    | exp • EQUAL exp
-   66    | exp • DIFF exp
-   67    | exp • AND exp
-   68    | exp • OR exp
+   54 exp: exp • PLUS exp
+   54    | exp PLUS exp •
+   55    | exp • MOINS exp
+   56    | exp • STAR exp
+   57    | exp • DIV exp
+   64    | exp • INF exp
+   65    | exp • SUP exp
+   66    | exp • EQUAL exp
+   67    | exp • DIFF exp
+   68    | exp • AND exp
+   69    | exp • OR exp
 
-    STAR  shift, and go to state 90
-    DIV   shift, and go to state 91
+    STAR  shift, and go to state 92
+    DIV   shift, and go to state 93
 
     $default  reduce using rule 54 (exp)
 
 
 State 112
 
-   53 exp: exp • PLUS exp
-   54    | exp • MOINS exp
-   55    | exp • STAR exp
-   55    | exp STAR exp •
-   56    | exp • DIV exp
-   63    | exp • INF exp
-   64    | exp • SUP exp
-   65    | exp • EQUAL exp
-   66    | exp • DIFF exp
-   67    | exp • AND exp
-   68    | exp • OR exp
+   54 exp: exp • PLUS exp
+   55    | exp • MOINS exp
+   55    | exp MOINS exp •
+   56    | exp • STAR exp
+   57    | exp • DIV exp
+   64    | exp • INF exp
+   65    | exp • SUP exp
+   66    | exp • EQUAL exp
+   67    | exp • DIFF exp
+   68    | exp • AND exp
+   69    | exp • OR exp
+
+    STAR  shift, and go to state 92
+    DIV   shift, and go to state 93
 
     $default  reduce using rule 55 (exp)
 
 
 State 113
 
-   53 exp: exp • PLUS exp
-   54    | exp • MOINS exp
-   55    | exp • STAR exp
-   56    | exp • DIV exp
-   56    | exp DIV exp •
-   63    | exp • INF exp
-   64    | exp • SUP exp
-   65    | exp • EQUAL exp
-   66    | exp • DIFF exp
-   67    | exp • AND exp
-   68    | exp • OR exp
+   54 exp: exp • PLUS exp
+   55    | exp • MOINS exp
+   56    | exp • STAR exp
+   56    | exp STAR exp •
+   57    | exp • DIV exp
+   64    | exp • INF exp
+   65    | exp • SUP exp
+   66    | exp • EQUAL exp
+   67    | exp • DIFF exp
+   68    | exp • AND exp
+   69    | exp • OR exp
 
     $default  reduce using rule 56 (exp)
 
 
 State 114
 
-   53 exp: exp • PLUS exp
-   54    | exp • MOINS exp
-   55    | exp • STAR exp
-   56    | exp • DIV exp
-   63    | exp • INF exp
-   64    | exp • SUP exp
-   65    | exp • EQUAL exp
-   66    | exp • DIFF exp
-   67    | exp • AND exp
-   68    | exp • OR exp
-   74 arglist: exp •
+   54 exp: exp • PLUS exp
+   55    | exp • MOINS exp
+   56    | exp • STAR exp
+   57    | exp • DIV exp
+   57    | exp DIV exp •
+   64    | exp • INF exp
+   65    | exp • SUP exp
+   66    | exp • EQUAL exp
+   67    | exp • DIFF exp
+   68    | exp • AND exp
+   69    | exp • OR exp
 
-    AND    shift, and go to state 82
-    OR     shift, and go to state 83
-    DIFF   shift, and go to state 84
-    EQUAL  shift, and go to state 85
-    SUP    shift, and go to state 86
-    INF    shift, and go to state 87
-    PLUS   shift, and go to state 88
-    MOINS  shift, and go to state 89
-    STAR   shift, and go to state 90
-    DIV    shift, and go to state 91
-
-    $default  reduce using rule 74 (arglist)
+    $default  reduce using rule 57 (exp)
 
 
 State 115
 
-   69 app: fid PO args • PF
+   54 exp: exp • PLUS exp
+   55    | exp • MOINS exp
+   56    | exp • STAR exp
+   57    | exp • DIV exp
+   64    | exp • INF exp
+   65    | exp • SUP exp
+   66    | exp • EQUAL exp
+   67    | exp • DIFF exp
+   68    | exp • AND exp
+   69    | exp • OR exp
+   75 arglist: exp •
 
-    PF  shift, and go to state 122
+    AND    shift, and go to state 84
+    OR     shift, and go to state 85
+    DIFF   shift, and go to state 86
+    EQUAL  shift, and go to state 87
+    SUP    shift, and go to state 88
+    INF    shift, and go to state 89
+    PLUS   shift, and go to state 90
+    MOINS  shift, and go to state 91
+    STAR   shift, and go to state 92
+    DIV    shift, and go to state 93
+
+    $default  reduce using rule 75 (arglist)
 
 
 State 116
 
-   71 args: arglist •
-   73 arglist: arglist • VIR exp
+   70 app: fid PO args • PF
 
-    VIR  shift, and go to state 123
-
-    $default  reduce using rule 71 (args)
+    PF  shift, and go to state 123
 
 
 State 117
 
-   46 bool_cond: PO exp PF •
+   72 args: arglist •
+   74 arglist: arglist • VIR exp
 
-    $default  reduce using rule 46 (bool_cond)
+    VIR  shift, and go to state 124
+
+    $default  reduce using rule 72 (args)
 
 
 State 118
 
-   48 else: ELSE •
+   47 bool_cond: PO exp PF •
 
-    $default  reduce using rule 48 (else)
+    $default  reduce using rule 47 (bool_cond)
 
 
 State 119
 
-   43 cond: if bool_cond inst elsop •
+   49 else: ELSE •
 
-    $default  reduce using rule 43 (cond)
+    $default  reduce using rule 49 (else)
 
 
 State 120
 
-   44 elsop: else • inst
+   44 cond: if bool_cond inst elsop •
 
-    NUM     shift, and go to state 38
-    DEC     shift, and go to state 39
-    ID      shift, and go to state 40
-    AO      shift, and go to state 41
-    PO      shift, and go to state 42
-    PV      shift, and go to state 43
-    RETURN  shift, and go to state 44
-    IF      shift, and go to state 45
-    WHILE   shift, and go to state 46
-    NOT     shift, and go to state 47
-    MOINS   shift, and go to state 48
-
-    pv     go to state 52
-    inst   go to state 124
-    ao     go to state 54
-    aff    go to state 55
-    ret    go to state 56
-    cond   go to state 57
-    if     go to state 58
-    loop   go to state 59
-    while  go to state 60
-    exp    go to state 61
-    app    go to state 62
-    fid    go to state 63
+    $default  reduce using rule 44 (cond)
 
 
 State 121
 
-   50 while_cond: PO exp PF •
+   45 elsop: else • inst
 
-    $default  reduce using rule 50 (while_cond)
+    NUM     shift, and go to state 40
+    DEC     shift, and go to state 41
+    ID      shift, and go to state 42
+    AO      shift, and go to state 43
+    PO      shift, and go to state 44
+    PV      shift, and go to state 45
+    RETURN  shift, and go to state 46
+    IF      shift, and go to state 47
+    WHILE   shift, and go to state 48
+    NOT     shift, and go to state 49
+    MOINS   shift, and go to state 50
+
+    pv     go to state 54
+    inst   go to state 125
+    ao     go to state 56
+    aff    go to state 57
+    ret    go to state 58
+    cond   go to state 59
+    if     go to state 60
+    loop   go to state 61
+    while  go to state 62
+    exp    go to state 63
+    app    go to state 64
+    fid    go to state 65
 
 
 State 122
 
-   69 app: fid PO args PF •
+   51 while_cond: PO exp PF •
 
-    $default  reduce using rule 69 (app)
+    $default  reduce using rule 51 (while_cond)
 
 
 State 123
 
-   73 arglist: arglist VIR • exp
+   70 app: fid PO args PF •
 
-    NUM    shift, and go to state 38
-    DEC    shift, and go to state 39
-    ID     shift, and go to state 66
-    PO     shift, and go to state 42
-    NOT    shift, and go to state 47
-    MOINS  shift, and go to state 48
-
-    exp  go to state 125
-    app  go to state 62
-    fid  go to state 63
+    $default  reduce using rule 70 (app)
 
 
 State 124
 
-   44 elsop: else inst •
+   74 arglist: arglist VIR • exp
 
-    $default  reduce using rule 44 (elsop)
+    NUM    shift, and go to state 40
+    DEC    shift, and go to state 41
+    ID     shift, and go to state 68
+    PO     shift, and go to state 44
+    NOT    shift, and go to state 49
+    MOINS  shift, and go to state 50
+
+    exp  go to state 126
+    app  go to state 64
+    fid  go to state 65
 
 
 State 125
 
-   53 exp: exp • PLUS exp
-   54    | exp • MOINS exp
-   55    | exp • STAR exp
-   56    | exp • DIV exp
-   63    | exp • INF exp
-   64    | exp • SUP exp
-   65    | exp • EQUAL exp
-   66    | exp • DIFF exp
-   67    | exp • AND exp
-   68    | exp • OR exp
-   73 arglist: arglist VIR exp •
+   45 elsop: else inst •
 
-    AND    shift, and go to state 82
-    OR     shift, and go to state 83
-    DIFF   shift, and go to state 84
-    EQUAL  shift, and go to state 85
-    SUP    shift, and go to state 86
-    INF    shift, and go to state 87
-    PLUS   shift, and go to state 88
-    MOINS  shift, and go to state 89
-    STAR   shift, and go to state 90
-    DIV    shift, and go to state 91
+    $default  reduce using rule 45 (elsop)
 
-    $default  reduce using rule 73 (arglist)
+
+State 126
+
+   54 exp: exp • PLUS exp
+   55    | exp • MOINS exp
+   56    | exp • STAR exp
+   57    | exp • DIV exp
+   64    | exp • INF exp
+   65    | exp • SUP exp
+   66    | exp • EQUAL exp
+   67    | exp • DIFF exp
+   68    | exp • AND exp
+   69    | exp • OR exp
+   74 arglist: arglist VIR exp •
+
+    AND    shift, and go to state 84
+    OR     shift, and go to state 85
+    DIFF   shift, and go to state 86
+    EQUAL  shift, and go to state 87
+    SUP    shift, and go to state 88
+    INF    shift, and go to state 89
+    PLUS   shift, and go to state 90
+    MOINS  shift, and go to state 91
+    STAR   shift, and go to state 92
+    DIV    shift, and go to state 93
+
+    $default  reduce using rule 74 (arglist)

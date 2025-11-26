@@ -131,7 +131,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 37 "lang.y"
+#line 33 "lang.y"
  
   struct ATTRIBUTE * symbol_value;
   char * string_value;
