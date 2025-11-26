@@ -47,6 +47,6 @@ attribute set_symbol_value(char * symb_id,attribute value);
 
 
 //Modif by Yani
-void pop_symbols(int current_depth);
+void remove_symbols_at_depth(int d);
 
 #endif

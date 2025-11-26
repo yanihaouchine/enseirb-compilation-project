@@ -23,7 +23,6 @@ int current_type = 0; // type courant pour add_global_variable() //Modifier par 
 int current_offset = 0; // compteur global pour les offsets
 
 #define MAX_LABELS 100
-static int current_loop = -1;
 static int cond_stack[MAX_LABELS];
 static int cond_sp = 0;
 static int cond_count = 0;
@@ -128,13 +127,14 @@ glob_fun_list : glob_fun_list fun {}
 
 // I. Functions
 
-fun : type fun_head fun_body   {}
+fun : type fun_head fun_body   {  }
 ;
 
 po: PO {end_glob_var_decl();}  // dirty trick to end function init_glob_var() definition in target code
   
 fun_head : ID po PF            {
   // Pas de déclaration de fonction à l'intérieur de fonctions !
+  
   if (depth>0) yyerror("Function must be declared at top level~!\n");
   }
 
@@ -238,7 +238,7 @@ pv : PV                       {}
 ;
  
 inst:
-ao block af                   {depth++;
+ao block af                   {
                                 }
 | exp pv                      {}
 | aff pv                      {}
@@ -251,10 +251,16 @@ ao block af                   {depth++;
 // Accolades explicites pour gerer l'entrée et la sortie d'un sous-bloc
 
 ao : AO                       {printf("SAVEBP \n");
+depth++;
+current_offset = 1;
 }
 ;
 
 af : AF                       {printf("RESTOREBP \n");
+    remove_symbols_at_depth(depth);
+
+    depth--;
+
 }
 ;
 
@@ -270,9 +276,17 @@ if(a->type == FLOAT && $3 == INT) {
 } else if(a->type == INT && $3 == FLOAT) {
     printf("F2I1\n");   // conversion de l'exp vers int
 }
-
-printf("LOADI(%d)\n", a->offset);
+if (a->depth == depth) {
+    // locale
+    printf("LOADBP\n");
+    printf("SHIFT(%d)\n", a->offset);
+} else {
+    // globale
+    printf("LOADI(%d)\n", a->offset);
+    
+}
 printf("STORE\n");
+
 
 
 };
@@ -294,6 +308,7 @@ cond :
 if bool_cond inst  elsop       {
 
 pop_cond();
+depth--;
 
 }
 ;
@@ -310,6 +325,7 @@ printf("IFN(False_%d)\n", top_cond());}
 ;
 
 if : IF { 
+  depth++;
   int label = cond_count++;
     push_cond(label);
 }
@@ -330,12 +346,14 @@ loop : while while_cond inst  {printf("GOTO(StartLoop_%i)\n",top_cond());
 printf(" EndLoop_%i :\n",top_cond());
 
 pop_cond();
+depth--;
 }
 ;
 
 while_cond : PO exp PF        {printf("IFN(EndLoop_%i ):\n",top_cond());}
 
 while : WHILE                 {
+  depth++;
  int label = cond_count++;
     push_cond(label);
       printf("StartLoop_%i :\n",top_cond());}
@@ -355,8 +373,17 @@ exp //MODIFIER PAR Yas
 | PO exp PF                   {$$ = $2;}
 | ID                          {attribute a = get_symbol_value($1);
     if (!a) yyerror("Variable non déclarée");
-    printf("LOADI(%d)\n", a->offset);
-    printf("LOAD\n");
+    if (a->depth == depth) {
+        // locale
+        printf("LOADBP\n");
+        printf("SHIFT(%d)\n", a->offset);
+        printf("LOAD\n");
+    } else {
+        // globale
+       
+        printf("LOADI(%d)\n", a->offset);
+        printf("LOAD\n");
+    }
     $$ = a->type;}
 | app                         {}
 | NUM  { printf("LOADI(%d)\n",$<int_value>1); $$=INT; }
@@ -417,7 +444,7 @@ return stack[sp-1].int_value;\n\
 \n";  
 
 printf("%s\n",header); // ouput header
-  
+ 
 return yyparse (); // output your compilation
  
  
