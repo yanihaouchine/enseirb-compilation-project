@@ -16,18 +16,15 @@ void init_glob_var(){
 
 int pcode_min() {
 LOADBP
-LOAD
 SHIFT(-2)
 LOAD
 LOADBP
-LOAD
 SHIFT(-1)
 LOAD
 LTI
 IFN(False_0)
 SAVEBP 
 LOADBP
-LOAD
 SHIFT(-2)
 LOAD
 LOADBP
@@ -38,7 +35,6 @@ GOTO(End_0)
 False_0:
 SAVEBP 
 LOADBP
-LOAD
 SHIFT(-1)
 LOAD
 LOADBP
