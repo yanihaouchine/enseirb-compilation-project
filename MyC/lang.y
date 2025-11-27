@@ -19,14 +19,9 @@ void yyerror (char* s) {
 int depth=0; // block depth
 int current_type = 0; // type courant pour add_global_variable() //Modifier par yasmine
 int current_offset = 0; // compteur global pour les offsets
-
-#define MAX_LABELS 100
-static int cond_stack[MAX_LABELS];
-static int cond_sp = 0;
 static int cond_count = 0;
-void push_cond(int v) { cond_stack[cond_sp++] = v; }
-int  pop_cond() { return cond_stack[--cond_sp]; }
-int  top_cond() { return cond_stack[cond_sp-1]; }
+#define MAX_LABELS 100
+
 
 int current_function_arg_count = 0;
 int current_return_offset = -1;//pour loffset de retour de l fonction
@@ -105,6 +100,7 @@ void end_glob_var_decl(){
 %type <string_value> fid
 %type <int_value> args arglist
 %type <type_value> app
+%type <label_value> if while cond loop if_head
 
 %%
 
@@ -219,7 +215,7 @@ block
 faf {
    // printf("}\n");
 };
-;
+
 
 fao : AO                       {
   //printf("%i\n",depth);
@@ -298,7 +294,7 @@ type
 : typename     { $$ = $1; current_type = $1;} //Modifier
 ;
 
-;
+
 
 typename // Utilisation des terminaux comme codage (entier) du type !!!
 : INT                          {$$=INT;} 
@@ -404,56 +400,47 @@ ret
 //           avec ELSE en entrée (voir y.output)
 
 cond :
-if bool_cond inst  elsop       {
-pop_cond();
-depth--;
+if_head
+ELSE { printf("GOTO(End_%d)\n", $1);
+       printf("False_%d:\n", $1); }
+inst {printf("End_%d:\n", $1);
+                     depth--;}
 
-}
+|if_head %prec IFX { printf("False_%d:\n", $1);
+                          depth--;}
+;
+if_head : 
+
+
+  if bool_cond          { printf("IFN(False_%d)\n", $1); }
+  inst
+                        {$$ = $1;}
 ;
 
-elsop : else inst              {   printf("End_%d:\n", top_cond());
-}
-|                  %prec IFX   {
-    printf("False_%d:\n", top_cond());
- } ;
 
-bool_cond : PO exp PF         {
-printf("IFN(False_%d)\n", top_cond());}
+bool_cond : PO exp PF         {}
 ;
 
-if : IF { 
+if : IF {
+  $$ = cond_count++;
   depth++;
-  int label = cond_count++;
-    push_cond(label);
-}
-
-
-else : ELSE                   {
- printf("GOTO(End_%d)\n", top_cond());
-printf("False_%d:\n", top_cond());
-
-  
-
 }
 ;
-
 // IV.4. Iterations
 
-loop : while while_cond inst  {printf("GOTO(StartLoop_%i)\n",top_cond());
-printf(" EndLoop_%i :\n",top_cond());
-
-pop_cond();
+loop : while while_cond  {printf("IFN(EndLoop_%i ):\n",$1);} inst  {
+  printf("GOTO(StartLoop_%i)\n",$1);
+printf(" EndLoop_%i :\n",$1);
 depth--;
 }
 ;
 
-while_cond : PO exp PF        {printf("IFN(EndLoop_%i )\n",top_cond());}
+while_cond : PO exp PF        {}
 
 while : WHILE                 {
   depth++;
- int label = cond_count++;
-    push_cond(label);
-      printf("StartLoop_%i :\n",top_cond());}
+ $$ = cond_count++;
+      printf("StartLoop_%i :\n",$$);}
 ;
 
 
