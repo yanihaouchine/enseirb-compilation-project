@@ -14,6 +14,13 @@ return stack[sp-1].int_value;
 void init_glob_var(){
 }
 
+void pcode_one() {
+LOADI(1)
+}
 void pcode_main() {
-LOADF(1.300000)
+// loading default returned value
+// loading function one arguments
+SAVEBP
+CALL(pcode_one)
+RESTOREBP
 }

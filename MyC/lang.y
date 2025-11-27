@@ -4,6 +4,8 @@
 #include "Table_des_symboles.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
   int make_code_arith(int exp1, int op, int exp2);
 extern int yylex();
 extern int yyparse();
@@ -22,12 +24,12 @@ int current_offset = 0; // compteur global pour les offsets
 static int cond_stack[MAX_LABELS];
 static int cond_sp = 0;
 static int cond_count = 0;
-
 void push_cond(int v) { cond_stack[cond_sp++] = v; }
 int  pop_cond() { return cond_stack[--cond_sp]; }
 int  top_cond() { return cond_stack[cond_sp-1]; }
 
-
+int current_function_arg_count = 0;
+int current_return_offset = -1;//pour loffset de retour de l fonction
 %}
 
 %union { 
@@ -100,6 +102,9 @@ void end_glob_var_decl(){
 // liste de tous les type des attributs des non terminaux que vous voulez manipuler l'attribut (il faudra en ajouter plein ;-) )
 %type <type_value> type exp  typename
 %type <string_value> fun_head
+%type <string_value> fid
+%type <int_value> args arglist
+%type <type_value> app
 
 %%
 
@@ -123,44 +128,116 @@ glob_fun_list : glob_fun_list fun {}
 
 // I. Functions
 
-fun : type fun_head fun_body   {  }
-;
+fun : type fun_head fun_body {
+  
+};
+
+
 
 po: PO {end_glob_var_decl();}  // dirty trick to end function init_glob_var() definition in target code
   
 fun_head : ID po PF            {
-  // Pas de déclaration de fonction à l'intérieur de fonctions !
-  
-  if (depth>0) yyerror("Function must be declared at top level~!\n");
-  }
+ /* création du symbole fonction */
+    attribute a = new_attribute();
+    a->type = current_type;
+    a->depth = 0;
+    a->offset = 0;
+    set_symbol_value($1, a);
+
+    /* initialisation de l'environnement de la fonction */
+    current_function_arg_count = 0;   /* aucun param encore */
+    current_return_offset = -1;       /* valeur par défaut (sera recalculée si params existent) */
+
+    /* on entre dans le corps de la fonction : on met depth = 1 (cadre fonction) */
+    depth = 1;
+    current_offset = 1; /* offset des variables locales commence à 1 */
+
+    if (strcmp($1, "main") == 0) {
+        printf("void pcode_main() {\n");
+        /* pour main on peut initialiser différemment si souhaité */
+    } else {
+        printf("%s pcode_%s() {\n", type2string(a->type), $1);
+    }    
+
+
+}
 
 | ID po params PF              {
-   // Pas de déclaration de fonction à l'intérieur de fonctions !
-  if (depth>0) yyerror("Function must be declared at top level~!\n");
- }
+   if (depth > 0) yyerror("Function must be declared at top level~!\n");
+
+    attribute a = new_attribute();
+    a->type = current_type;
+    a->depth = 0;
+    a->offset = 0;
+    set_symbol_value($1, a);
+
+    /* params a été traité : current_function_arg_count contient le nombre d'arguments */
+    /* offset de retour = -(nb_args + 1) */
+    current_return_offset = -(current_function_arg_count + 1);
+
+    /* on entre dans le corps de la fonction */
+    depth = 1;
+    current_offset = 1;
+
+    printf("%s pcode_%s(", type2string(a->type), $1);
+    /* ici si tu veux afficher les noms d'arguments tu peux le faire pendant params */
+    printf(") {\n");
+    
+ } 
 ;
 
-params: type ID vir params     {} // récursion droite pour numéroter les paramètres du dernier au premier
-| type ID                      {}
+params
+: type ID VIR params {
+    attribute a = new_attribute();
+    a->type = $1;
+    a->depth = 1; /* appartiennent au cadre fonction */
+    a->offset = - (current_function_arg_count + 1); /* -1, -2, ... */
+    current_function_arg_count++; /* on compte un argument de plus */
+    set_symbol_value($2, a);
+
+}
+| type ID {
+    attribute a = new_attribute();
+    a->type = $1;
+    a->depth = 1;
+    a->offset = - (current_function_arg_count + 1);
+    current_function_arg_count++;
+    set_symbol_value($2, a);
+
+}
+;
+
+
 
 
 vir : VIR                      {}
 ;
 
 fun_body :fao {
-    printf("void pcode_main() {\n");
-    depth = 1;
-    current_offset = 1;
 }
 block
 faf {
-    printf("}\n");
+   // printf("}\n");
 };
 ;
 
-fao : AO                       {}
+fao : AO                       {
+  //printf("%i\n",depth);
+depth++;
+//printf("%i\n",depth);
+}
 ;
-faf : AF                       {}
+faf : AF                       {     /* supprime variables locales de profondeur 1 */
+//printf("%i\n",depth);
+depth--;
+//printf("%i\n",depth);
+
+    remove_symbols_at_depth(depth);
+    depth = 0;
+    current_function_arg_count = 0;
+    current_return_offset = -1;
+    printf("}\n");
+}
 ;
 
 
@@ -196,8 +273,6 @@ if (a->type == INT) {
 } else if (a->type == FLOAT) {
     printf("LOADF(0.0)\n\n");
 }
-
-
 }
 | ID {
 attribute a = new_attribute();
@@ -255,7 +330,7 @@ ao block af                   {
 
 ao : AO                       {printf("SAVEBP \n");
 depth++;
-current_offset = 1;
+current_offset=1;
 }
 ;
 
@@ -281,8 +356,7 @@ aff : ID EQ exp {
     else if (a->type == INT && $3 == FLOAT)
         printf("F2I1\n");
 
-    if (a->depth != depth) {
-      // VARIABLE GLOBALE
+    if (a->depth != depth) {// VARIABLE GLOBALE
       if(a->depth<depth  ){
         if(a->depth !=0){
         printf("LOADBP\n");
@@ -294,18 +368,11 @@ aff : ID EQ exp {
         }
         
       }
-     
-        
-    } else {
-        // VARIABLE LOCALE 
-        
+    } else {// VARIABLE LOCALE
         printf("LOADBP\n");
-
-        /* Remonter les blocs */
-        int d = depth - a->depth;
+        int d = depth - a->depth;// Remonter les blocs 
         for (int i = 0; i < d; i++)
             printf("LOAD ");
-
         printf("SHIFT(%d) \n",
                a->offset);
     }
@@ -319,8 +386,16 @@ aff : ID EQ exp {
 
 
 // IV.2 Return
-ret : RETURN exp              {}
-| RETURN PO PF                {}
+ret
+: RETURN exp {
+    /* l'expression a placé la valeur de retour sur la pile */
+    /* on l'écrit à l'adresse réservée pour le retour, calculée dans fun_head */
+    printf("LOADBP\n");
+    printf("SHIFT(%d)\n", current_return_offset);
+    printf("STORE\n");
+     
+}
+| RETURN PO PF { /* return sans expression : rien à faire ici si tu veux mettre 0 par défaut */ }
 ;
 
 // IV.3. Conditionelles
@@ -340,8 +415,7 @@ elsop : else inst              {   printf("End_%d:\n", top_cond());
 }
 |                  %prec IFX   {
     printf("False_%d:\n", top_cond());
- } // juste un "truc" pour éviter le message de conflit shift / reduce
-;
+ } ;
 
 bool_cond : PO exp PF         {
 printf("IFN(False_%d)\n", top_cond());}
@@ -373,7 +447,7 @@ depth--;
 }
 ;
 
-while_cond : PO exp PF        {printf("IFN(EndLoop_%i ):\n",top_cond());}
+while_cond : PO exp PF        {printf("IFN(EndLoop_%i )\n",top_cond());}
 
 while : WHILE                 {
   depth++;
@@ -387,36 +461,45 @@ while : WHILE                 {
 
 exp //MODIFIER PAR Yas
 // V.1 Exp. arithmetiques
-: MOINS exp %prec UNA         {}
+: MOINS exp %prec UNA         {if ($2 == INT) {
+        printf("MINUSI\n");   /* négation entière */
+        $$ = INT;
+    } else if ($2 == FLOAT) {
+        printf("MINUSF\n");   /* négation flottante */
+        $$ = FLOAT;
+    } }
          // -x + y lue comme (- x) + y  et pas - (x + y)
 | exp PLUS exp                {$$ = make_code_arith($1, PLUS, $3);}
 | exp MOINS exp               {$$ = make_code_arith($1, MOINS, $3);}
 | exp STAR exp                { $$ = make_code_arith($1, STAR, $3);}
 | exp DIV  exp                {$$ = make_code_arith($1, DIV, $3);}
 | PO exp PF                   {$$ = $2;}
-| ID {
+|  ID {
     attribute a = get_symbol_value($1);
     if (!a) yyerror("Variable non déclarée");
 
-    if (a->depth !=depth) {
-        // VARIABLE GLOBALE 
-        printf("LOADI(%d) \n", a->offset);
+    if (a->offset < 0) {
+        /* c'est un argument (offset négatif) : accéder via BP */
+        printf("LOADBP\n");
+        printf("SHIFT(%d)\n", a->offset);
+        printf("LOAD\n");
+    } else if (a->depth != depth) {
+        /* variable globale (ou déclarée dans un autre cadre) : on utilise LOADI(offset) si tu stockes adresse globale */
+        /* ici on suppose a->offset donne l'adresse entière globale */
+        printf("LOADI(%d)\n", a->offset);
         printf("LOAD\n");
     } else {
-        // VARIABLE LOCALE
+        /* variable locale au même depth : on remonte éventuellement les blocs imbriqués */
         printf("LOADBP\n");
-
-        /* Remonter les blocs */
         int d = depth - a->depth;
-        for (int i = 0; i < d; i++)
-            printf("LOAD" );
-
-        printf("SHIFT(%d)\n",a->offset);
+        for (int i = 0; i < d; i++) printf("LOAD\n");
+        printf("SHIFT(%d)\n", a->offset);
         printf("LOAD\n");
     }
 
     $$ = a->type;
 }
+
 
 | app                         {}
 | NUM  { printf("LOADI(%d)\n",$<int_value>1); $$=INT; }
@@ -439,17 +522,41 @@ exp //MODIFIER PAR Yas
 // V.3 Applications de fonctions
 
 
-app : fid PO args PF          {}
+app
+: fid{// Génération du code pour empiler les arguments
+        attribute a = get_symbol_value($1);
+
+    // args already pushed on stack by 'args'
+     if (a->type == FLOAT)
+        printf("LOADI(0.0)\n");
+    else if (a->type == INT )
+        printf("LOADI(0)\n");
+    } PO args PF {
+    attribute a = get_symbol_value($1);
+    if (!a) yyerror("Function non déclarée");
+
+    /* arguments sont déjà évalués par 'args' et empilés (arglist produit les LOADI/LOAD/...) */
+    printf("SAVEBP\n");
+    printf("CALL(pcode_%s)\n", $1);
+    printf("RESTOREBP\n");
+
+    /* supprimer les arguments empilés */
+    if ($4 > 0) printf("DROP(%d)\n", $4);
+
+    $$ = a->type;
+}
 ;
 
-fid : ID                      {}
 
-args :  arglist               {}
-|                             {}
+
+fid : ID                      {$$ = $1; }//nom de la fonction
+
+args :  arglist               { $$ = $1;}
+|                             {$$=0;}
 ;
 
-arglist : arglist VIR exp     {} // récursion gauche pour empiler les arguements de la fonction de gauche à droite
-| exp                         {}
+arglist : arglist VIR exp     {$$ = $1 + 1; } // récursion gauche pour empiler les arguements de la fonction de gauche à droite
+| exp                         {$$=1;}
 ;
 
 

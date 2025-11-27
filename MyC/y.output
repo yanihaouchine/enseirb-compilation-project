@@ -25,7 +25,7 @@ Grammar
     9 fun_head: ID po PF
    10         | ID po params PF
 
-   11 params: type ID vir params
+   11 params: type ID VIR params
    12       | type ID
 
    13 vir: VIR
@@ -113,15 +113,17 @@ Grammar
    68    | exp AND exp
    69    | exp OR exp
 
-   70 app: fid PO args PF
+   70 $@2: ε
 
-   71 fid: ID
+   71 app: fid $@2 PO args PF
 
-   72 args: arglist
-   73     | ε
+   72 fid: ID
 
-   74 arglist: arglist VIR exp
-   75        | exp
+   73 args: arglist
+   74     | ε
+
+   75 arglist: arglist VIR exp
+   76        | exp
 
 
 Terminals, with rules where they appear
@@ -133,13 +135,13 @@ Terminals, with rules where they appear
     INT (260) 26
     FLOAT (261) 27
     VOID (262) 28
-    ID <string_value> (263) 9 10 11 12 23 24 41 59 71
+    ID <string_value> (263) 9 10 11 12 23 24 41 59 72
     AO (264) 16 39
     AF (265) 17 40
-    PO (266) 8 43 47 51 58 70
-    PF (267) 9 10 43 47 51 58 70
+    PO (266) 8 43 47 51 58 71
+    PF (267) 9 10 43 47 51 58 71
     PV (268) 3 19 31
-    VIR (269) 13 74
+    VIR (269) 11 13 75
     RETURN (270) 42 43
     EQ (271) 41
     IF <label_value> (272) 48
@@ -192,7 +194,7 @@ Nonterminals, with rules where they appear
         on right: 10 11
     vir (44)
         on left: 13
-        on right: 11 23
+        on right: 23
     fun_body (45)
         on left: 15
         on right: 7
@@ -273,19 +275,22 @@ Nonterminals, with rules where they appear
         on right: 50
     exp <type_value> (71)
         on left: 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69
-        on right: 33 41 42 47 51 53 54 55 56 57 58 63 64 65 66 67 68 69 74 75
-    app (72)
-        on left: 70
-        on right: 60
-    fid (73)
+        on right: 33 41 42 47 51 53 54 55 56 57 58 63 64 65 66 67 68 69 75 76
+    app <type_value> (72)
         on left: 71
-        on right: 70
-    args (74)
-        on left: 72 73
-        on right: 70
-    arglist (75)
-        on left: 74 75
-        on right: 72 74
+        on right: 60
+    $@2 (73)
+        on left: 70
+        on right: 71
+    fid <string_value> (74)
+        on left: 72
+        on right: 71
+    args <int_value> (75)
+        on left: 73 74
+        on right: 71
+    arglist <int_value> (76)
+        on left: 75 76
+        on right: 73 75
 
 
 State 0
@@ -556,7 +561,7 @@ State 29
 
 State 30
 
-   11 params: type • ID vir params
+   11 params: type • ID VIR params
    12       | type • ID
 
     ID  shift, and go to state 34
@@ -588,14 +593,12 @@ State 33
 
 State 34
 
-   11 params: type ID • vir params
+   11 params: type ID • VIR params
    12       | type ID •
 
-    VIR  shift, and go to state 26
+    VIR  shift, and go to state 37
 
     $default  reduce using rule 12 (params)
-
-    vir  go to state 37
 
 
 State 35
@@ -648,7 +651,7 @@ State 36
 
 State 37
 
-   11 params: type ID vir • params
+   11 params: type ID VIR • params
 
     INT    shift, and go to state 5
     FLOAT  shift, and go to state 6
@@ -691,11 +694,11 @@ State 42
 
    41 aff: ID • EQ exp
    59 exp: ID •
-   71 fid: ID •
+   72 fid: ID •
 
     EQ  shift, and go to state 67
 
-    PO        reduce using rule 71 (fid)
+    PO        reduce using rule 72 (fid)
     $default  reduce using rule 59 (exp)
 
 
@@ -953,14 +956,16 @@ State 64
 
 State 65
 
-   70 app: fid • PO args PF
+   71 app: fid • $@2 PO args PF
 
-    PO  shift, and go to state 95
+    $default  reduce using rule 70 ($@2)
+
+    $@2  go to state 95
 
 
 State 66
 
-   11 params: type ID vir params •
+   11 params: type ID VIR params •
 
     $default  reduce using rule 11 (params)
 
@@ -984,9 +989,9 @@ State 67
 State 68
 
    59 exp: ID •
-   71 fid: ID •
+   72 fid: ID •
 
-    PO        reduce using rule 71 (fid)
+    PO        reduce using rule 72 (fid)
     $default  reduce using rule 59 (exp)
 
 
@@ -1402,22 +1407,9 @@ State 94
 
 State 95
 
-   70 app: fid PO • args PF
+   71 app: fid $@2 • PO args PF
 
-    NUM    shift, and go to state 40
-    DEC    shift, and go to state 41
-    ID     shift, and go to state 68
-    PO     shift, and go to state 44
-    NOT    shift, and go to state 49
-    MOINS  shift, and go to state 50
-
-    $default  reduce using rule 73 (args)
-
-    exp      go to state 115
-    app      go to state 64
-    fid      go to state 65
-    args     go to state 116
-    arglist  go to state 117
+    PO  shift, and go to state 115
 
 
 State 96
@@ -1490,7 +1482,7 @@ State 101
    68    | exp • AND exp
    69    | exp • OR exp
 
-    PF     shift, and go to state 118
+    PF     shift, and go to state 116
     AND    shift, and go to state 84
     OR     shift, and go to state 85
     DIFF   shift, and go to state 86
@@ -1507,12 +1499,12 @@ State 102
 
    44 cond: if bool_cond inst • elsop
 
-    ELSE  shift, and go to state 119
+    ELSE  shift, and go to state 117
 
     $default  reduce using rule 46 (elsop)
 
-    elsop  go to state 120
-    else   go to state 121
+    elsop  go to state 118
+    else   go to state 119
 
 
 State 103
@@ -1529,7 +1521,7 @@ State 103
    68    | exp • AND exp
    69    | exp • OR exp
 
-    PF     shift, and go to state 122
+    PF     shift, and go to state 120
     AND    shift, and go to state 84
     OR     shift, and go to state 85
     DIFF   shift, and go to state 86
@@ -1766,71 +1758,46 @@ State 114
 
 State 115
 
-   54 exp: exp • PLUS exp
-   55    | exp • MOINS exp
-   56    | exp • STAR exp
-   57    | exp • DIV exp
-   64    | exp • INF exp
-   65    | exp • SUP exp
-   66    | exp • EQUAL exp
-   67    | exp • DIFF exp
-   68    | exp • AND exp
-   69    | exp • OR exp
-   75 arglist: exp •
+   71 app: fid $@2 PO • args PF
 
-    AND    shift, and go to state 84
-    OR     shift, and go to state 85
-    DIFF   shift, and go to state 86
-    EQUAL  shift, and go to state 87
-    SUP    shift, and go to state 88
-    INF    shift, and go to state 89
-    PLUS   shift, and go to state 90
-    MOINS  shift, and go to state 91
-    STAR   shift, and go to state 92
-    DIV    shift, and go to state 93
+    NUM    shift, and go to state 40
+    DEC    shift, and go to state 41
+    ID     shift, and go to state 68
+    PO     shift, and go to state 44
+    NOT    shift, and go to state 49
+    MOINS  shift, and go to state 50
 
-    $default  reduce using rule 75 (arglist)
+    $default  reduce using rule 74 (args)
+
+    exp      go to state 121
+    app      go to state 64
+    fid      go to state 65
+    args     go to state 122
+    arglist  go to state 123
 
 
 State 116
-
-   70 app: fid PO args • PF
-
-    PF  shift, and go to state 123
-
-
-State 117
-
-   72 args: arglist •
-   74 arglist: arglist • VIR exp
-
-    VIR  shift, and go to state 124
-
-    $default  reduce using rule 72 (args)
-
-
-State 118
 
    47 bool_cond: PO exp PF •
 
     $default  reduce using rule 47 (bool_cond)
 
 
-State 119
+State 117
 
    49 else: ELSE •
 
     $default  reduce using rule 49 (else)
 
 
-State 120
+State 118
 
    44 cond: if bool_cond inst elsop •
 
     $default  reduce using rule 44 (cond)
 
 
-State 121
+State 119
 
    45 elsop: else • inst
 
@@ -1847,7 +1814,7 @@ State 121
     MOINS   shift, and go to state 50
 
     pv     go to state 54
-    inst   go to state 125
+    inst   go to state 124
     ao     go to state 56
     aff    go to state 57
     ret    go to state 58
@@ -1860,44 +1827,14 @@ State 121
     fid    go to state 65
 
 
-State 122
+State 120
 
    51 while_cond: PO exp PF •
 
     $default  reduce using rule 51 (while_cond)
 
 
-State 123
-
-   70 app: fid PO args PF •
-
-    $default  reduce using rule 70 (app)
-
-
-State 124
-
-   74 arglist: arglist VIR • exp
-
-    NUM    shift, and go to state 40
-    DEC    shift, and go to state 41
-    ID     shift, and go to state 68
-    PO     shift, and go to state 44
-    NOT    shift, and go to state 49
-    MOINS  shift, and go to state 50
-
-    exp  go to state 126
-    app  go to state 64
-    fid  go to state 65
-
-
-State 125
-
-   45 elsop: else inst •
-
-    $default  reduce using rule 45 (elsop)
-
-
-State 126
+State 121
 
    54 exp: exp • PLUS exp
    55    | exp • MOINS exp
@@ -1909,7 +1846,7 @@ State 126
    67    | exp • DIFF exp
    68    | exp • AND exp
    69    | exp • OR exp
-   74 arglist: arglist VIR exp •
+   76 arglist: exp •
 
     AND    shift, and go to state 84
     OR     shift, and go to state 85
@@ -1922,4 +1859,79 @@ State 126
     STAR   shift, and go to state 92
     DIV    shift, and go to state 93
 
-    $default  reduce using rule 74 (arglist)
+    $default  reduce using rule 76 (arglist)
+
+
+State 122
+
+   71 app: fid $@2 PO args • PF
+
+    PF  shift, and go to state 125
+
+
+State 123
+
+   73 args: arglist •
+   75 arglist: arglist • VIR exp
+
+    VIR  shift, and go to state 126
+
+    $default  reduce using rule 73 (args)
+
+
+State 124
+
+   45 elsop: else inst •
+
+    $default  reduce using rule 45 (elsop)
+
+
+State 125
+
+   71 app: fid $@2 PO args PF •
+
+    $default  reduce using rule 71 (app)
+
+
+State 126
+
+   75 arglist: arglist VIR • exp
+
+    NUM    shift, and go to state 40
+    DEC    shift, and go to state 41
+    ID     shift, and go to state 68
+    PO     shift, and go to state 44
+    NOT    shift, and go to state 49
+    MOINS  shift, and go to state 50
+
+    exp  go to state 127
+    app  go to state 64
+    fid  go to state 65
+
+
+State 127
+
+   54 exp: exp • PLUS exp
+   55    | exp • MOINS exp
+   56    | exp • STAR exp
+   57    | exp • DIV exp
+   64    | exp • INF exp
+   65    | exp • SUP exp
+   66    | exp • EQUAL exp
+   67    | exp • DIFF exp
+   68    | exp • AND exp
+   69    | exp • OR exp
+   75 arglist: arglist VIR exp •
+
+    AND    shift, and go to state 84
+    OR     shift, and go to state 85
+    DIFF   shift, and go to state 86
+    EQUAL  shift, and go to state 87
+    SUP    shift, and go to state 88
+    INF    shift, and go to state 89
+    PLUS   shift, and go to state 90
+    MOINS  shift, and go to state 91
+    STAR   shift, and go to state 92
+    DIV    shift, and go to state 93
+
+    $default  reduce using rule 75 (arglist)
