@@ -529,7 +529,7 @@ exp{
   printf("BoolTrue_%d :\n",$<label_value>3);
   printf("LOADI(1)\n"); // Symétriqument à ci dessus...
   printf("BoolEnd_%d :\n",$<label_value>3);
-  $<label_value>$ = INT;
+  $$ = INT;
 };
 
 
