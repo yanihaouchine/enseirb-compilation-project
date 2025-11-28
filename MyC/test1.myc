@@ -1,5 +1,6 @@
 void one() {
   1;
+  return ;
   }
 
 
