@@ -501,10 +501,37 @@ exp //MODIFIER PAR Yas
 | exp SUP exp                 {printf("GTI\n"); $$=INT;}
 | exp EQUAL exp               {printf("EQI\n"); $$=INT;}
 | exp DIFF exp                {printf("NEI\n"); $$=INT;}
-| exp AND exp                 {printf("AND\n"); $$=INT;}
-| exp OR exp                  {printf("OR\n"); $$=INT;}
 
-;
+| exp AND
+{
+  $<label_value>$ = cond_count++;
+  printf("IFN(BoolFalse_%d)\n",$<label_value>$);
+}
+exp{
+  printf("IFN(BoolFalse_%d)\n",$<label_value>3);
+  printf("LOADI(1)\n"); //ICI 1 fait office de true...
+  printf("GOTO(BoolEnd_%d)\n",$<label_value>3);
+  printf("BoolFalse_%d :\n",$<label_value>3);
+  printf("LOADI(0)\n"); // Symétriqument à ci dessus...
+  printf("BoolEnd_%d :\n",$<label_value>3);
+  $$ = INT;
+};
+
+| exp OR
+{
+  $<label_value>$ = cond_count++;
+  printf("IF(BoolTrue_%d)\n",$<label_value>$);
+}
+exp{
+  printf("IF(BoolTrue_%d)\n",$<label_value>3);
+  printf("LOADI(0)\n"); //ICI 0 fait office de false...
+  printf("GOTO(BoolEnd_%d)\n",$<label_value>3);
+  printf("BoolTrue_%d :\n",$<label_value>3);
+  printf("LOADI(1)\n"); // Symétriqument à ci dessus...
+  printf("BoolEnd_%d :\n",$<label_value>3);
+  $<label_value>$ = INT;
+};
+
 
 // V.3 Applications de fonctions
 
