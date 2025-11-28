@@ -612,6 +612,7 @@ if (!a) yyerror("Function non déclarée");
     int F = 0;
     node *e = $4;
     node *e0 = a -> type_var -> head;
+    int n = 0;
     while(e){
       	if(!e0) yyerror("Trop d'arguments pour les fonction");
       switch(e -> data){
@@ -627,6 +628,7 @@ if (!a) yyerror("Function non déclarée");
       default:
 	yyerror("Type inconnue");
       }
+      n++;
       	e = e -> next;
       	e0 = e0 -> next;
     }
@@ -641,7 +643,7 @@ if (!a) yyerror("Function non déclarée");
     printf("RESTOREBP\n");
 
     /* supprimer les arguments empilés */
-    if ($4 > 0) printf("DROP(%d)\n", $4 -> data);
+    if (n > 0) printf("DROP(%d)\n", n);
 
     $$ = a->type;
 } 
