@@ -124,7 +124,7 @@ glob_fun_list : glob_fun_list fun {}
 
 // I. Functions
 
-fun : type fun_head fun_body {
+fun : type fun_head { if (depth > 0) yyerror("Function must be declared at top level~!\n"); } fun_body {
   
 };
 
@@ -138,11 +138,11 @@ fun_head : ID po PF            {
 a->type = current_type;
     a->depth = 0;
     a->offset = 0;
-    set_symbol_value($1, a);
+    set_symbol_value_fun($1, a);
     current_function_arg_count = 0;  
     current_return_offset = -1;      
 
- 
+  
     current_offset = 1; 
 depth=0;
     if (strcmp($1, "main") == 0) {
@@ -159,7 +159,6 @@ depth=0;
 }
 
 | ID po params PF              {
-   if (depth > 0) yyerror("Function must be declared at top level~!\n");
 
     attribute a = new_attribute();
     a->type = current_type;
