@@ -100,7 +100,7 @@ void end_glob_var_decl(){
 %type <string_value> fun_head
 %type <string_value> fid
 %type <int_value> args arglist
-%type <type_value> app fun type_fun
+%type <type_value> app fun ret
 %type <label_value> if while cond loop if_head
 
 %%
@@ -125,18 +125,22 @@ glob_fun_list : glob_fun_list fun {}
 
 // I. Functions
 
-fun : type_fun  fun_head { if (depth > 0) yyerror("Function must be declared at top level~!\n"); } fun_body {
+fun : type fun_head pv {printf(";\n");}
+
+
+| type fun_head {if (depth > 0) yyerror("Function must be declared at top level~!\n"); } fun_body {
   $$ = $1;
 };
 
 
 
-po: PO {end_glob_var_decl();}  // dirty trick to end function init_glob_var() definition in target code
+po: PO { end_glob_var_decl();};  // dirty trick to end function init_glob_var() definition in target code
   
 fun_head : ID po PF            {
  
     attribute a = new_attribute();
 a->type = current_type;
+ current_type_fun = current_type;
     a->depth = 0;
     a->offset = 0;
     set_symbol_value($1, a);
@@ -147,10 +151,10 @@ a->type = current_type;
     current_offset = 1; 
 depth=0;
     if (strcmp($1, "main") == 0) {
-        printf("void pcode_main() {\n");
+        printf("void pcode_main() \n");
         
     } else {
-        printf("%s pcode_%s() {\n", type2string(current_type_fun), $1);
+        printf("%s pcode_%s() ", type2string(a -> type), $1);
         
 
 
@@ -159,18 +163,19 @@ depth=0;
 
 }
 
-| ID po params PF              {
+| ID po {current_type_fun = current_type;} params PF              {
 
     attribute a = new_attribute();
-    a->type = current_type;
+    a->type = current_type_fun;
+    //current_type_fun = current_type;
     a->depth = 0;
     a->offset = 0;
     set_symbol_value($1, a);
 depth=0;
     current_return_offset = -(current_function_arg_count + 1);
     current_offset = 1;
-    printf("%s pcode_%s(", type2string(current_type_fun), $1);
-    printf(") {\n");
+    printf("%s pcode_%s(", type2string(a -> type), $1);
+    printf(")");
     
  } 
 ;
@@ -202,8 +207,7 @@ params
 vir : VIR                      {}
 ;
 
-fun_body :fao {
-}
+fun_body :fao { printf("{\n");}
 block
 faf {
    // printf("}\n");
@@ -283,9 +287,6 @@ if (a->type == INT) {
 type
 : typename     { $$ = $1; current_type = $1;} //Modifier
 ;
-
-type_fun : typename { $$ = $1; current_type_fun = $1;}
-
 typename // Utilisation des terminaux comme codage (entier) du type !!!
 : INT                          {$$=INT;} 
 | FLOAT                        {$$=FLOAT;}
@@ -306,7 +307,7 @@ ao block af                   {
                                 }
 | exp pv                      {}
 | aff pv                      {}
-| ret pv                      {}
+| ret pv                      { if(current_type_fun != $1) yyerror("erreur type de retour");}
 | cond                        {}
 | loop                        {}
 | pv                          {}
@@ -314,7 +315,8 @@ ao block af                   {
 
 // Accolades explicites pour gerer l'entrée et la sortie d'un sous-bloc
 
-ao : AO                       {printf("SAVEBP \n");
+ao : AO                       {
+  printf("SAVEBP \n");
 depth++;
 current_offset=1;
 }
@@ -389,6 +391,7 @@ ret
 
         /* STORE la valeur de retour */
         printf("STORE\n");
+	$$ = $2;
   
      
 }
@@ -515,7 +518,7 @@ if(a->depth==depth){
 }
 
 
-| app                         {}
+| app                         {$$ = $1;}
 | NUM  { printf("LOADI(%d)\n",$<int_value>1); $$=INT; }
 | DEC  { printf("LOADF(%f)\n",$<float_value>1); $$=FLOAT; }
 
@@ -575,6 +578,7 @@ if (!a) yyerror("Function non déclarée");
           if(a->type == FLOAT) printf("LOADF(0)\n");
           
         }
+	//$<type_value>$ = a -> type;
 
     } PO args PF {
     attribute a = get_symbol_value($1);
@@ -589,7 +593,7 @@ if (!a) yyerror("Function non déclarée");
     if ($4 > 0) printf("DROP(%d)\n", $4);
 
     $$ = a->type;
-}
+} 
 ;
 
 
