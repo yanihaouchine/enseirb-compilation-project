@@ -41,10 +41,12 @@ attribute new_attribute ();
 /* get the symbol value of symb_id from the symbol table, NULL if it fails */
 attribute get_symbol_value(char * symb_id);
 
+attribute get_symbol_value_fun(char * symb_id);
+
 /* add the symbol symb_id with given value */
 attribute set_symbol_value(char * symb_id,attribute value);
 
-
+attribute set_symbol_value_fun(char * symb_id,attribute value);
 
 //Modif by Yani
 void remove_symbols_at_depth(int d);

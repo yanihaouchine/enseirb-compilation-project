@@ -18,6 +18,7 @@ void yyerror (char* s) {
 
 int depth=0; // block depth
 int current_type = 0; // type courant pour add_global_variable() //Modifier par yasmine
+ int current_type_fun = 0;
 int current_offset = 0; // compteur global pour les offsets
 static int cond_count = 0;
 #define MAX_LABELS 100
@@ -99,7 +100,7 @@ void end_glob_var_decl(){
 %type <string_value> fun_head
 %type <string_value> fid
 %type <int_value> args arglist
-%type <type_value> app
+%type <type_value> app fun type_fun
 %type <label_value> if while cond loop if_head
 
 %%
@@ -124,8 +125,8 @@ glob_fun_list : glob_fun_list fun {}
 
 // I. Functions
 
-fun : type fun_head { if (depth > 0) yyerror("Function must be declared at top level~!\n"); } fun_body {
-  
+fun : type_fun  fun_head { if (depth > 0) yyerror("Function must be declared at top level~!\n"); } fun_body {
+  $$ = $1;
 };
 
 
@@ -138,7 +139,7 @@ fun_head : ID po PF            {
 a->type = current_type;
     a->depth = 0;
     a->offset = 0;
-    set_symbol_value_fun($1, a);
+    set_symbol_value($1, a);
     current_function_arg_count = 0;  
     current_return_offset = -1;      
 
@@ -149,7 +150,7 @@ depth=0;
         printf("void pcode_main() {\n");
         
     } else {
-        printf("%s pcode_%s() {\n", type2string(a->type), $1);
+        printf("%s pcode_%s() {\n", type2string(current_type_fun), $1);
         
 
 
@@ -168,7 +169,7 @@ depth=0;
 depth=0;
     current_return_offset = -(current_function_arg_count + 1);
     current_offset = 1;
-    printf("%s pcode_%s(", type2string(a->type), $1);
+    printf("%s pcode_%s(", type2string(current_type_fun), $1);
     printf(") {\n");
     
  } 
@@ -283,7 +284,7 @@ type
 : typename     { $$ = $1; current_type = $1;} //Modifier
 ;
 
-
+type_fun : typename { $$ = $1; current_type_fun = $1;}
 
 typename // Utilisation des terminaux comme codage (entier) du type !!!
 : INT                          {$$=INT;} 
