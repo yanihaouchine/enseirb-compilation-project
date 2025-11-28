@@ -146,8 +146,6 @@ a->type = current_type;
     set_symbol_value($1, a);
     current_function_arg_count = 0;  
     current_return_offset = -1;      
-
-  
     current_offset = 1; 
 depth=0;
     if (strcmp($1, "main") == 0) {
@@ -307,7 +305,23 @@ ao block af                   {
                                 }
 | exp pv                      {}
 | aff pv                      {}
-| ret pv                      { if(current_type_fun != $1) yyerror("erreur type de retour");}
+| ret pv                      {
+   
+    
+    if (current_type_fun == VOID )
+    {
+        yyerror("Erreur : une fonction void ne doit pas retourner de valeur");
+    }
+    else if (current_type_fun == INT && $1 == FLOAT)
+    {
+        yyerror("Erreur : return float dans une fonction int");
+    }
+    else if (current_type_fun == FLOAT && $1 == INT)
+    {
+        /* 3) float ← int → conversion → I2F */
+        printf("I2F\n");
+    }
+}
 | cond                        {}
 | loop                        {}
 | pv                          {}

@@ -16,9 +16,4 @@ void init_glob_var(){
 
 void pcode_one() {
 LOADI(1)
-}
-void pcode_main() {
-SAVEBP
-CALL(pcode_one)
-RESTOREBP
-}
+syntax error
