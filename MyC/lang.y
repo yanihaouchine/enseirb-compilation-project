@@ -127,7 +127,6 @@ glob_fun_list : glob_fun_list fun {}
 
 // I. Functions
 fun : type fun_head pv {printf(";\n");
-   if(current_type_ret != current_type_fun) yyerror("erreur must return ?");
    current_type_ret = VOID;}
 
 

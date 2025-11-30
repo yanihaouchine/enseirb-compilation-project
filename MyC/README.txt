@@ -35,3 +35,8 @@ Pour lancer le compilateur:
 
 
 La commande qui lance tous les tests:
+$ ./compile_all.sh
+
+
+Remarque :
+Notre compilateur ne permet pas d’appeler une fonction avec des paramètres dans un ordre différent de celui défini lors de sa déclaration.
