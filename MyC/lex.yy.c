@@ -483,8 +483,8 @@ char *yytext;
 #line 1 "lang.l"
 /* avoid dependency with library fl */
 #line 5 "lang.l"
-#include "y.tab.h"
 #include "Table_des_symboles.h"
+#include "y.tab.h"
 #include <stdio.h>
 
 #line 491 "lex.yy.c"

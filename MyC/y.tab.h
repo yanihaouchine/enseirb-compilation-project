@@ -131,7 +131,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 31 "lang.y"
+#line 33 "lang.y"
  
   struct ATTRIBUTE * symbol_value;
   char * string_value;
@@ -140,8 +140,9 @@ union YYSTYPE
   int type_value; //pour stocker le type de exp
   int label_value;
   int offset_value;
+  node *n;
 
-#line 145 "y.tab.h"
+#line 146 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

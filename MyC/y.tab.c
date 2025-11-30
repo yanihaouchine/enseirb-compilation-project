@@ -88,7 +88,7 @@ void yyerror (char* s) {
 
 int depth=0; // block depth
 int current_type = 0; // type courant pour add_global_variable() //Modifier par yasmine
- int current_type_fun = 0;
+ int current_type_ret = 262;	
 int current_offset = 0; // compteur global pour les offsets
 static int cond_count = 0;
 #define MAX_LABELS 100
@@ -96,8 +96,10 @@ static int cond_count = 0;
 
 int current_function_arg_count = 0;
 int current_return_offset = -1;//pour loffset de retour de l fonction
+ int current_type_fun = 0;
 
-#line 101 "y.tab.c"
+
+#line 103 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -218,7 +220,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 31 "lang.y"
+#line 33 "lang.y"
  
   struct ATTRIBUTE * symbol_value;
   char * string_value;
@@ -227,8 +229,9 @@ union YYSTYPE
   int type_value; //pour stocker le type de exp
   int label_value;
   int offset_value;
+  node *n;
 
-#line 232 "y.tab.c"
+#line 235 "y.tab.c"
 
 };
 typedef union YYSTYPE YYSTYPE;
@@ -336,7 +339,7 @@ typedef enum yysymbol_kind_t yysymbol_kind_t;
 
 
 /* Second part of user prologue.  */
-#line 67 "lang.y"
+#line 70 "lang.y"
 
 char * type2string (int c) {
   switch (c)
@@ -365,7 +368,7 @@ void end_glob_var_decl(){
  
   
 
-#line 369 "y.tab.c"
+#line 372 "y.tab.c"
 
 
 #ifdef short
@@ -689,7 +692,7 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  4
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   232
+#define YYLAST   241
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  35
@@ -750,15 +753,15 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,   110,   110,   113,   116,   117,   122,   123,   128,   131,
-     131,   137,   139,   164,   164,   182,   191,   205,   208,   208,
-     215,   221,   234,   239,   240,   243,   246,   249,   265,   286,
-     289,   290,   291,   296,   297,   300,   304,   306,   307,   308,
-     325,   326,   327,   332,   339,   351,   393,   412,   422,   421,
-     427,   433,   433,   439,   442,   449,   449,   456,   458,   469,
-     477,   478,   479,   480,   481,   482,   535,   536,   537,   543,
-     544,   545,   546,   547,   550,   549,   565,   564,   584,   584,
-     615,   617,   618,   621,   622
+       0,   112,   112,   115,   118,   119,   124,   125,   129,   134,
+     134,   143,   145,   170,   170,   187,   199,   216,   219,   219,
+     226,   232,   245,   250,   251,   254,   257,   260,   276,   297,
+     300,   301,   302,   307,   308,   311,   315,   317,   318,   319,
+     336,   337,   338,   343,   350,   362,   403,   423,   432,   431,
+     437,   443,   443,   449,   452,   459,   459,   466,   468,   479,
+     487,   488,   489,   490,   491,   492,   545,   546,   547,   553,
+     554,   555,   556,   557,   560,   559,   575,   574,   594,   594,
+     654,   656,   657,   660,   664
 };
 #endif
 
@@ -812,16 +815,16 @@ static const yytype_int16 yypact[] =
        9,   -55,    16,   -55,   -55,    24,   -55,    19,    20,    21,
       19,   -55,    26,   -55,    25,   -55,   -55,    28,   -55,    22,
      -55,   -55,   -55,   -55,    29,    34,   -55,   -55,    37,    43,
-      71,    22,   -55,   -55,   -55,   -55,     1,   -55,   113,   115,
-     -55,   -55,   113,   113,    42,    49,    92,   -55,   -55,   -55,
-      20,    20,   -55,    44,    50,   -55,    55,   180,   -55,   -55,
-     -55,   113,    56,   124,     3,   191,   -55,   -55,   -55,   -55,
-     -55,    58,   -55,   -55,   -55,   113,   -55,   113,   -55,   -55,
-     -55,   113,   113,   113,   113,   113,   113,   113,   113,   -55,
-      59,   191,   -55,   -55,   -55,   -55,    92,   143,    92,   162,
-      92,   113,   113,    -9,    -9,    -9,    -9,   -20,   -20,   -55,
-     -55,   113,   -55,   -55,   -55,   -55,   -55,   104,   202,   191,
-      48,    57,   -55,   113,   191
+      63,    22,   -55,   -55,   -55,   -55,     1,   -55,   105,   107,
+     -55,   -55,   105,   105,    42,    49,    84,   -55,   -55,   -55,
+      20,    20,   -55,    44,    50,   -55,    64,   172,   -55,   -55,
+     -55,   105,    66,   116,     3,   200,   -55,   -55,   -55,   -55,
+     -55,    69,   -55,   -55,   -55,   105,   -55,   105,   -55,   -55,
+     -55,   105,   105,   105,   105,   105,   105,   105,   105,   -55,
+      70,   200,   -55,   -55,   -55,   -55,    84,   135,    84,   154,
+      84,   105,   105,    -9,    -9,    -9,    -9,   -20,   -20,   -55,
+     -55,   105,   -55,   -55,   -55,   -55,   -55,    96,   211,   189,
+      48,   -55,   105,   -55,   -55
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -842,17 +845,17 @@ static const yytype_int8 yydefact[] =
        0,    45,    64,    47,    44,    36,     0,     0,     0,     0,
        0,     0,     0,    73,    72,    71,    70,    60,    61,    62,
       63,    82,    49,    53,    52,    57,    56,    75,    77,    84,
-       0,    81,    79,     0,    83
+       0,    81,     0,    79,    83
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -55,   -55,   -55,   -55,   -55,    61,   -55,   -55,   -55,   -55,
-      31,   -55,   -55,   -55,   -55,   -55,    30,   -55,    41,   -55,
+     -55,   -55,   -55,   -55,   -55,    75,   -55,   -55,   -55,   -55,
+      45,   -40,   -55,   -55,   -55,   -55,    31,   -55,    54,   -55,
      -55,     0,   -55,   -55,    -2,   -54,   -55,   -55,   -55,   -55,
      -55,   -55,   -55,   -55,   -55,   -55,   -55,   -55,   -55,   -55,
-     -48,   -55,   -55,   -55,   -55,   -55,   -55,   -55
+     -48,   -55,   -55,   -55,   -55,   -55,   -55,   -36
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
@@ -876,24 +879,25 @@ static const yytype_int16 yytable[] =
       21,    53,    20,    23,    30,    26,    33,   107,    28,   109,
       55,    37,    38,   113,   114,   115,   116,   117,   118,   119,
      120,    41,   122,    42,   124,    78,   126,    79,    82,    83,
-     132,    85,    84,   127,   128,    99,    87,   -80,   104,    14,
-     121,   133,    70,   129,    44,    45,     5,     6,     7,    46,
-      47,    54,    48,     0,    23,   134,    49,     0,    50,    81,
-      51,     0,     0,    52,     0,    44,    45,     0,     0,    53,
-      46,    47,     0,    48,     0,    23,     0,    49,     0,    50,
-       0,    51,     0,     0,    52,     0,    44,    45,    44,    45,
-      53,    72,     0,    72,    48,     0,    74,    91,    92,    93,
-      94,    95,    96,    97,    98,    52,   102,    52,     0,     0,
-       0,    53,     0,    53,    89,    90,     0,    91,    92,    93,
-      94,    95,    96,    97,    98,   123,     0,     0,     0,     0,
-       0,     0,     0,    89,    90,     0,    91,    92,    93,    94,
-      95,    96,    97,    98,   125,     0,     0,     0,     0,     0,
+     133,    85,    84,   127,   128,    99,    44,    45,     5,     6,
+       7,    46,    47,   129,    48,    87,    23,   -80,    49,   104,
+      50,   121,    51,    14,   129,    52,    70,    44,    45,   132,
+      81,    53,    46,    47,    54,    48,   134,    23,     0,    49,
+       0,    50,     0,    51,     0,     0,    52,     0,    44,    45,
+      44,    45,    53,    72,     0,    72,    48,     0,    74,    91,
+      92,    93,    94,    95,    96,    97,    98,    52,   102,    52,
+       0,     0,     0,    53,     0,    53,    89,    90,     0,    91,
+      92,    93,    94,    95,    96,    97,    98,   123,     0,     0,
+       0,     0,     0,     0,     0,    89,    90,     0,    91,    92,
+      93,    94,    95,    96,    97,    98,   125,     0,     0,     0,
+       0,     0,     0,     0,    89,    90,     0,    91,    92,    93,
+      94,    95,    96,    97,    98,    23,     0,     0,     0,     0,
        0,     0,    89,    90,     0,    91,    92,    93,    94,    95,
-      96,    97,    98,    23,     0,     0,     0,     0,     0,     0,
+      96,    97,    98,    26,     0,     0,     0,     0,     0,    89,
+      90,     0,    91,    92,    93,    94,    95,    96,    97,    98,
       89,    90,     0,    91,    92,    93,    94,    95,    96,    97,
-      98,    89,    90,     0,    91,    92,    93,    94,    95,    96,
-      97,    98,    89,     0,     0,    91,    92,    93,    94,    95,
-      96,    97,    98
+      98,    89,     0,     0,    91,    92,    93,    94,    95,    96,
+      97,    98
 };
 
 static const yytype_int16 yycheck[] =
@@ -904,24 +908,25 @@ static const yytype_int16 yycheck[] =
       11,    28,     8,    13,     9,    14,     8,    85,    12,    87,
       40,    12,     8,    91,    92,    93,    94,    95,    96,    97,
       98,    14,   106,    10,   108,    13,   110,     8,    60,    61,
-      12,    11,    18,   111,   112,    67,    11,    11,    10,     8,
-      11,    14,    41,   121,     3,     4,     5,     6,     7,     8,
-       9,    40,    11,    -1,    13,   133,    15,    -1,    17,    59,
-      19,    -1,    -1,    22,    -1,     3,     4,    -1,    -1,    28,
-       8,     9,    -1,    11,    -1,    13,    -1,    15,    -1,    17,
-      -1,    19,    -1,    -1,    22,    -1,     3,     4,     3,     4,
-      28,     8,    -1,     8,    11,    -1,    11,    23,    24,    25,
-      26,    27,    28,    29,    30,    22,    12,    22,    -1,    -1,
-      -1,    28,    -1,    28,    20,    21,    -1,    23,    24,    25,
-      26,    27,    28,    29,    30,    12,    -1,    -1,    -1,    -1,
-      -1,    -1,    -1,    20,    21,    -1,    23,    24,    25,    26,
-      27,    28,    29,    30,    12,    -1,    -1,    -1,    -1,    -1,
+      12,    11,    18,   111,   112,    67,     3,     4,     5,     6,
+       7,     8,     9,   121,    11,    11,    13,    11,    15,    10,
+      17,    11,    19,     8,   132,    22,    41,     3,     4,   129,
+      59,    28,     8,     9,    40,    11,   132,    13,    -1,    15,
+      -1,    17,    -1,    19,    -1,    -1,    22,    -1,     3,     4,
+       3,     4,    28,     8,    -1,     8,    11,    -1,    11,    23,
+      24,    25,    26,    27,    28,    29,    30,    22,    12,    22,
+      -1,    -1,    -1,    28,    -1,    28,    20,    21,    -1,    23,
+      24,    25,    26,    27,    28,    29,    30,    12,    -1,    -1,
+      -1,    -1,    -1,    -1,    -1,    20,    21,    -1,    23,    24,
+      25,    26,    27,    28,    29,    30,    12,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    20,    21,    -1,    23,    24,    25,
+      26,    27,    28,    29,    30,    13,    -1,    -1,    -1,    -1,
       -1,    -1,    20,    21,    -1,    23,    24,    25,    26,    27,
-      28,    29,    30,    13,    -1,    -1,    -1,    -1,    -1,    -1,
+      28,    29,    30,    14,    -1,    -1,    -1,    -1,    -1,    20,
+      21,    -1,    23,    24,    25,    26,    27,    28,    29,    30,
       20,    21,    -1,    23,    24,    25,    26,    27,    28,    29,
-      30,    20,    21,    -1,    23,    24,    25,    26,    27,    28,
-      29,    30,    20,    -1,    -1,    23,    24,    25,    26,    27,
-      28,    29,    30
+      30,    20,    -1,    -1,    23,    24,    25,    26,    27,    28,
+      29,    30
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
@@ -941,7 +946,7 @@ static const yytype_int8 yystos[] =
       79,    75,    12,    12,    10,    62,    66,    75,    68,    75,
       72,    76,    77,    75,    75,    75,    75,    75,    75,    75,
       75,    11,    60,    12,    60,    12,    60,    75,    75,    75,
-      81,    82,    12,    14,    75
+      81,    82,    46,    12,    82
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
@@ -1433,71 +1438,76 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* prog: glob_decl_list  */
-#line 110 "lang.y"
+#line 112 "lang.y"
                                    {}
-#line 1439 "y.tab.c"
+#line 1444 "y.tab.c"
     break;
 
   case 3: /* glob_decl_list: glob_var_list glob_fun_list  */
-#line 113 "lang.y"
+#line 115 "lang.y"
                                              {}
-#line 1445 "y.tab.c"
+#line 1450 "y.tab.c"
     break;
 
   case 4: /* glob_var_list: glob_var_list decl PV  */
-#line 116 "lang.y"
+#line 118 "lang.y"
                                       {}
-#line 1451 "y.tab.c"
+#line 1456 "y.tab.c"
     break;
 
   case 5: /* glob_var_list: %empty  */
-#line 117 "lang.y"
+#line 119 "lang.y"
   {printf("void init_glob_var(){\n"); // starting  function init_glob_var() definition in target code
    current_offset = 0;
  }
-#line 1459 "y.tab.c"
+#line 1464 "y.tab.c"
     break;
 
   case 6: /* glob_fun_list: glob_fun_list fun  */
-#line 122 "lang.y"
+#line 124 "lang.y"
                                   {}
-#line 1465 "y.tab.c"
+#line 1470 "y.tab.c"
     break;
 
   case 7: /* glob_fun_list: fun  */
-#line 123 "lang.y"
+#line 125 "lang.y"
       {}
-#line 1471 "y.tab.c"
+#line 1476 "y.tab.c"
     break;
 
   case 8: /* fun: type fun_head pv  */
-#line 128 "lang.y"
-                       {printf(";\n");}
-#line 1477 "y.tab.c"
+#line 129 "lang.y"
+                       {printf(";\n");
+   if(current_type_ret != current_type_fun) yyerror("erreur must return ?");
+   current_type_ret = VOID;}
+#line 1484 "y.tab.c"
     break;
 
   case 9: /* $@1: %empty  */
-#line 131 "lang.y"
+#line 134 "lang.y"
                 {if (depth > 0) yyerror("Function must be declared at top level~!\n"); }
-#line 1483 "y.tab.c"
+#line 1490 "y.tab.c"
     break;
 
   case 10: /* fun: type fun_head $@1 fun_body  */
-#line 131 "lang.y"
+#line 134 "lang.y"
                                                                                                   {
+  if(current_type_fun != current_type_ret){
+     yyerror("erreur de type de retour");}
   (yyval.type_value) = (yyvsp[-3].type_value);
+  current_type_ret = VOID;
 }
-#line 1491 "y.tab.c"
+#line 1501 "y.tab.c"
     break;
 
   case 11: /* po: PO  */
-#line 137 "lang.y"
+#line 143 "lang.y"
        { end_glob_var_decl();}
-#line 1497 "y.tab.c"
+#line 1507 "y.tab.c"
     break;
 
   case 12: /* fun_head: ID po PF  */
-#line 139 "lang.y"
+#line 145 "lang.y"
                                {
  
     attribute a = new_attribute();
@@ -1505,9 +1515,11 @@ a->type = current_type;
  current_type_fun = current_type;
     a->depth = 0;
     a->offset = 0;
-    set_symbol_value((yyvsp[-2].string_value), a);
+    set_symbol_value_fun((yyvsp[-2].string_value), a);
     current_function_arg_count = 0;  
     current_return_offset = -1;      
+
+  
     current_offset = 1; 
 depth=0;
     if (strcmp((yyvsp[-2].string_value), "main") == 0) {
@@ -1518,41 +1530,38 @@ depth=0;
         
 
 
-    }    
-
-
+    }
 }
-#line 1526 "y.tab.c"
+#line 1536 "y.tab.c"
     break;
 
   case 13: /* $@2: %empty  */
-#line 164 "lang.y"
+#line 170 "lang.y"
         {current_type_fun = current_type;}
-#line 1532 "y.tab.c"
+#line 1542 "y.tab.c"
     break;
 
   case 14: /* fun_head: ID po $@2 params PF  */
-#line 164 "lang.y"
+#line 170 "lang.y"
                                                                   {
 
     attribute a = new_attribute();
     a->type = current_type_fun;
-    //current_type_fun = current_type;
     a->depth = 0;
     a->offset = 0;
-    set_symbol_value((yyvsp[-4].string_value), a);
+    set_symbol_value_fun((yyvsp[-4].string_value), a);
 depth=0;
     current_return_offset = -(current_function_arg_count + 1);
     current_offset = 1;
     printf("%s pcode_%s(", type2string(a -> type), (yyvsp[-4].string_value));
     printf(")");
-    
+    a -> type_var -> head = (yyvsp[-1].n);  
  }
-#line 1552 "y.tab.c"
+#line 1561 "y.tab.c"
     break;
 
   case 15: /* params: type ID VIR params  */
-#line 182 "lang.y"
+#line 187 "lang.y"
                      {
     attribute a = new_attribute();
     a->type = (yyvsp[-3].type_value);
@@ -1560,13 +1569,16 @@ depth=0;
     a->offset = - (current_function_arg_count + 1); 
     current_function_arg_count++; 
     set_symbol_value((yyvsp[-2].string_value), a);
-
+    node *n = malloc(sizeof(*n));
+    n -> data = (yyvsp[-3].type_value);
+    n -> next = (yyvsp[0].n);
+    (yyval.n) = n;
 }
-#line 1566 "y.tab.c"
+#line 1578 "y.tab.c"
     break;
 
   case 16: /* params: type ID  */
-#line 191 "lang.y"
+#line 199 "lang.y"
           {
     attribute a = new_attribute();
     a->type = (yyvsp[-1].type_value);
@@ -1574,43 +1586,46 @@ depth=0;
     a->offset = - (current_function_arg_count + 1);
     current_function_arg_count++;
     set_symbol_value((yyvsp[0].string_value), a);
-
+    node *n = malloc(sizeof(*n));
+    n -> data = (yyvsp[-1].type_value);
+    n -> next = NULL;
+    (yyval.n) = n;
 }
-#line 1580 "y.tab.c"
+#line 1595 "y.tab.c"
     break;
 
   case 17: /* vir: VIR  */
-#line 205 "lang.y"
+#line 216 "lang.y"
                                {}
-#line 1586 "y.tab.c"
+#line 1601 "y.tab.c"
     break;
 
   case 18: /* $@3: %empty  */
-#line 208 "lang.y"
+#line 219 "lang.y"
               { printf("{\n");}
-#line 1592 "y.tab.c"
+#line 1607 "y.tab.c"
     break;
 
   case 19: /* fun_body: fao $@3 block faf  */
-#line 210 "lang.y"
+#line 221 "lang.y"
     {
    // printf("}\n");
 }
-#line 1600 "y.tab.c"
+#line 1615 "y.tab.c"
     break;
 
   case 20: /* fao: AO  */
-#line 215 "lang.y"
+#line 226 "lang.y"
                                {
   //printf("%i\n",depth);
 depth++;
 //printf("%i\n",depth);
 }
-#line 1610 "y.tab.c"
+#line 1625 "y.tab.c"
     break;
 
   case 21: /* faf: AF  */
-#line 221 "lang.y"
+#line 232 "lang.y"
                                {     
 
     remove_symbols_at_depth(depth);
@@ -1619,41 +1634,41 @@ depth++;
     current_return_offset = -1;
     printf("}\n");
 }
-#line 1623 "y.tab.c"
+#line 1638 "y.tab.c"
     break;
 
   case 22: /* block: decl_list inst_list  */
-#line 234 "lang.y"
+#line 245 "lang.y"
                                {}
-#line 1629 "y.tab.c"
+#line 1644 "y.tab.c"
     break;
 
   case 23: /* decl_list: decl_list decl PV  */
-#line 239 "lang.y"
+#line 250 "lang.y"
                                 {}
-#line 1635 "y.tab.c"
+#line 1650 "y.tab.c"
     break;
 
   case 24: /* decl_list: %empty  */
-#line 240 "lang.y"
+#line 251 "lang.y"
                                 {}
-#line 1641 "y.tab.c"
+#line 1656 "y.tab.c"
     break;
 
   case 25: /* decl: var_decl  */
-#line 243 "lang.y"
+#line 254 "lang.y"
                                 {}
-#line 1647 "y.tab.c"
+#line 1662 "y.tab.c"
     break;
 
   case 26: /* var_decl: type vlist  */
-#line 246 "lang.y"
+#line 257 "lang.y"
                                {}
-#line 1653 "y.tab.c"
+#line 1668 "y.tab.c"
     break;
 
   case 27: /* vlist: vlist vir ID  */
-#line 249 "lang.y"
+#line 260 "lang.y"
                     { 
 attribute a = new_attribute();
 a->type = current_type;
@@ -1670,11 +1685,11 @@ if (a->type == INT) {
     printf("LOADF(0.0)\n\n");
 }
 }
-#line 1674 "y.tab.c"
+#line 1689 "y.tab.c"
     break;
 
   case 28: /* vlist: ID  */
-#line 265 "lang.y"
+#line 276 "lang.y"
      {
 attribute a = new_attribute();
 a->type = current_type;
@@ -1691,75 +1706,75 @@ if (a->type == INT) {
 
 
 }
-#line 1695 "y.tab.c"
+#line 1710 "y.tab.c"
     break;
 
   case 29: /* type: typename  */
-#line 286 "lang.y"
+#line 297 "lang.y"
                { (yyval.type_value) = (yyvsp[0].type_value); current_type = (yyvsp[0].type_value);}
-#line 1701 "y.tab.c"
+#line 1716 "y.tab.c"
     break;
 
   case 30: /* typename: INT  */
-#line 289 "lang.y"
+#line 300 "lang.y"
                                {(yyval.type_value)=INT;}
-#line 1707 "y.tab.c"
+#line 1722 "y.tab.c"
     break;
 
   case 31: /* typename: FLOAT  */
-#line 290 "lang.y"
+#line 301 "lang.y"
                                {(yyval.type_value)=FLOAT;}
-#line 1713 "y.tab.c"
+#line 1728 "y.tab.c"
     break;
 
   case 32: /* typename: VOID  */
-#line 291 "lang.y"
+#line 302 "lang.y"
                                {(yyval.type_value)=VOID;}
-#line 1719 "y.tab.c"
+#line 1734 "y.tab.c"
     break;
 
   case 33: /* inst_list: inst_list inst  */
-#line 296 "lang.y"
+#line 307 "lang.y"
                             {}
-#line 1725 "y.tab.c"
+#line 1740 "y.tab.c"
     break;
 
   case 34: /* inst_list: inst  */
-#line 297 "lang.y"
+#line 308 "lang.y"
                             {}
-#line 1731 "y.tab.c"
+#line 1746 "y.tab.c"
     break;
 
   case 35: /* pv: PV  */
-#line 300 "lang.y"
+#line 311 "lang.y"
                               {}
-#line 1737 "y.tab.c"
+#line 1752 "y.tab.c"
     break;
 
   case 36: /* inst: ao block af  */
-#line 304 "lang.y"
+#line 315 "lang.y"
                               {
                                 }
-#line 1744 "y.tab.c"
+#line 1759 "y.tab.c"
     break;
 
   case 37: /* inst: exp pv  */
-#line 306 "lang.y"
+#line 317 "lang.y"
                               {}
-#line 1750 "y.tab.c"
+#line 1765 "y.tab.c"
     break;
 
   case 38: /* inst: aff pv  */
-#line 307 "lang.y"
+#line 318 "lang.y"
                               {}
-#line 1756 "y.tab.c"
+#line 1771 "y.tab.c"
     break;
 
   case 39: /* inst: ret pv  */
-#line 308 "lang.y"
+#line 319 "lang.y"
                               {
    
-    
+  current_type_ret = (yyvsp[-1].type_value);
     if (current_type_fun == VOID )
     {
         yyerror("Erreur : une fonction void ne doit pas retourner de valeur");
@@ -1774,50 +1789,50 @@ if (a->type == INT) {
         printf("I2F\n");
     }
 }
-#line 1778 "y.tab.c"
+#line 1793 "y.tab.c"
     break;
 
   case 40: /* inst: cond  */
-#line 325 "lang.y"
+#line 336 "lang.y"
                               {}
-#line 1784 "y.tab.c"
+#line 1799 "y.tab.c"
     break;
 
   case 41: /* inst: loop  */
-#line 326 "lang.y"
+#line 337 "lang.y"
                               {}
-#line 1790 "y.tab.c"
+#line 1805 "y.tab.c"
     break;
 
   case 42: /* inst: pv  */
-#line 327 "lang.y"
+#line 338 "lang.y"
                               {}
-#line 1796 "y.tab.c"
+#line 1811 "y.tab.c"
     break;
 
   case 43: /* ao: AO  */
-#line 332 "lang.y"
+#line 343 "lang.y"
                               {
   printf("SAVEBP \n");
 depth++;
 current_offset=1;
 }
-#line 1806 "y.tab.c"
+#line 1821 "y.tab.c"
     break;
 
   case 44: /* af: AF  */
-#line 339 "lang.y"
+#line 350 "lang.y"
                               {printf("RESTOREBP \n");
     remove_symbols_at_depth(depth);
 
     depth--;
 
 }
-#line 1817 "y.tab.c"
+#line 1832 "y.tab.c"
     break;
 
   case 45: /* aff: ID EQ exp  */
-#line 351 "lang.y"
+#line 362 "lang.y"
                 {
     attribute a = get_symbol_value((yyvsp[-2].string_value));
     if (!a) yyerror("Variable non déclarée");
@@ -1852,12 +1867,12 @@ current_offset=1;
 
     printf("STORE\n");
 }
-#line 1856 "y.tab.c"
+#line 1871 "y.tab.c"
     break;
 
   case 46: /* ret: RETURN exp  */
-#line 393 "lang.y"
-             {
+#line 403 "lang.y"
+                 {
     
 
         int d = depth-1;   //nbre de bloc a remonter 
@@ -1872,101 +1887,101 @@ current_offset=1;
 
         /* STORE la valeur de retour */
         printf("STORE\n");
+	current_type_ret = (yyvsp[0].type_value);
 	(yyval.type_value) = (yyvsp[0].type_value);
   
      
 }
-#line 1880 "y.tab.c"
+#line 1896 "y.tab.c"
     break;
 
   case 47: /* ret: RETURN PO PF  */
-#line 412 "lang.y"
-               { 
-   /* return sans expression : rien à faire ici si tu veux mettre 0 par défaut */ }
-#line 1887 "y.tab.c"
+#line 423 "lang.y"
+               { (yyval.type_value) = VOID; }
+#line 1902 "y.tab.c"
     break;
 
   case 48: /* $@4: %empty  */
-#line 422 "lang.y"
+#line 432 "lang.y"
      { printf("GOTO(End_%d)\n", (yyvsp[-1].label_value));
        printf("False_%d:\n", (yyvsp[-1].label_value)); }
-#line 1894 "y.tab.c"
+#line 1909 "y.tab.c"
     break;
 
   case 49: /* cond: if_head ELSE $@4 inst  */
-#line 424 "lang.y"
+#line 434 "lang.y"
      {printf("End_%d:\n", (yyvsp[-3].label_value));
                      }
-#line 1901 "y.tab.c"
+#line 1916 "y.tab.c"
     break;
 
   case 50: /* cond: if_head  */
-#line 427 "lang.y"
+#line 437 "lang.y"
                    { printf("False_%d:\n", (yyvsp[0].label_value));
                           }
-#line 1908 "y.tab.c"
+#line 1923 "y.tab.c"
     break;
 
   case 51: /* $@5: %empty  */
-#line 433 "lang.y"
+#line 443 "lang.y"
                         { printf("IFN(False_%d)\n", (yyvsp[-1].label_value)); }
-#line 1914 "y.tab.c"
+#line 1929 "y.tab.c"
     break;
 
   case 52: /* if_head: if bool_cond $@5 inst  */
-#line 435 "lang.y"
+#line 445 "lang.y"
                         {(yyval.label_value) = (yyvsp[-3].label_value);}
-#line 1920 "y.tab.c"
+#line 1935 "y.tab.c"
     break;
 
   case 53: /* bool_cond: PO exp PF  */
-#line 439 "lang.y"
+#line 449 "lang.y"
                               {}
-#line 1926 "y.tab.c"
+#line 1941 "y.tab.c"
     break;
 
   case 54: /* if: IF  */
-#line 442 "lang.y"
+#line 452 "lang.y"
         {
   (yyval.label_value) = cond_count++;
   
 }
-#line 1935 "y.tab.c"
+#line 1950 "y.tab.c"
     break;
 
   case 55: /* $@6: %empty  */
-#line 449 "lang.y"
+#line 459 "lang.y"
                          {printf("IFN(EndLoop_%i)\n",(yyvsp[-1].label_value));}
-#line 1941 "y.tab.c"
+#line 1956 "y.tab.c"
     break;
 
   case 56: /* loop: while while_cond $@6 inst  */
-#line 449 "lang.y"
+#line 459 "lang.y"
                                                                  {
   printf("GOTO(StartLoop_%i)\n",(yyvsp[-3].label_value));
 printf(" EndLoop_%i: \n",(yyvsp[-3].label_value));
 
 }
-#line 1951 "y.tab.c"
+#line 1966 "y.tab.c"
     break;
 
   case 57: /* while_cond: PO exp PF  */
-#line 456 "lang.y"
+#line 466 "lang.y"
                               {}
-#line 1957 "y.tab.c"
+#line 1972 "y.tab.c"
     break;
 
   case 58: /* while: WHILE  */
-#line 458 "lang.y"
+#line 468 "lang.y"
                               {
  
  (yyval.label_value) = cond_count++;
       printf("StartLoop_%i :\n",(yyval.label_value));}
-#line 1966 "y.tab.c"
+#line 1981 "y.tab.c"
     break;
 
   case 59: /* exp: MOINS exp  */
-#line 469 "lang.y"
+#line 479 "lang.y"
                               {if ((yyvsp[0].type_value) == INT) {
         printf("MINUSI\n");   /* négation entière */
         (yyval.type_value) = INT;
@@ -1974,41 +1989,41 @@ printf(" EndLoop_%i: \n",(yyvsp[-3].label_value));
         printf("MINUSF\n");   /* négation flottante */
         (yyval.type_value) = FLOAT;
     } }
-#line 1978 "y.tab.c"
+#line 1993 "y.tab.c"
     break;
 
   case 60: /* exp: exp PLUS exp  */
-#line 477 "lang.y"
+#line 487 "lang.y"
                               {(yyval.type_value) = make_code_arith((yyvsp[-2].type_value), PLUS, (yyvsp[0].type_value));}
-#line 1984 "y.tab.c"
+#line 1999 "y.tab.c"
     break;
 
   case 61: /* exp: exp MOINS exp  */
-#line 478 "lang.y"
+#line 488 "lang.y"
                               {(yyval.type_value) = make_code_arith((yyvsp[-2].type_value), MOINS, (yyvsp[0].type_value));}
-#line 1990 "y.tab.c"
+#line 2005 "y.tab.c"
     break;
 
   case 62: /* exp: exp STAR exp  */
-#line 479 "lang.y"
+#line 489 "lang.y"
                               { (yyval.type_value) = make_code_arith((yyvsp[-2].type_value), STAR, (yyvsp[0].type_value));}
-#line 1996 "y.tab.c"
+#line 2011 "y.tab.c"
     break;
 
   case 63: /* exp: exp DIV exp  */
-#line 480 "lang.y"
+#line 490 "lang.y"
                               {(yyval.type_value) = make_code_arith((yyvsp[-2].type_value), DIV, (yyvsp[0].type_value));}
-#line 2002 "y.tab.c"
+#line 2017 "y.tab.c"
     break;
 
   case 64: /* exp: PO exp PF  */
-#line 481 "lang.y"
+#line 491 "lang.y"
                               {(yyval.type_value) = (yyvsp[-1].type_value);}
-#line 2008 "y.tab.c"
+#line 2023 "y.tab.c"
     break;
 
   case 65: /* exp: ID  */
-#line 482 "lang.y"
+#line 492 "lang.y"
       {
     attribute a = get_symbol_value((yyvsp[0].string_value));
     if (!a) yyerror("Variable non déclarée");
@@ -2060,68 +2075,68 @@ if(a->depth==depth){
 
     (yyval.type_value) = a->type;
 }
-#line 2064 "y.tab.c"
+#line 2079 "y.tab.c"
     break;
 
   case 66: /* exp: app  */
-#line 535 "lang.y"
+#line 545 "lang.y"
                               {(yyval.type_value) = (yyvsp[0].type_value);}
-#line 2070 "y.tab.c"
+#line 2085 "y.tab.c"
     break;
 
   case 67: /* exp: NUM  */
-#line 536 "lang.y"
+#line 546 "lang.y"
        { printf("LOADI(%d)\n",(yyvsp[0].int_value)); (yyval.type_value)=INT; }
-#line 2076 "y.tab.c"
+#line 2091 "y.tab.c"
     break;
 
   case 68: /* exp: DEC  */
-#line 537 "lang.y"
+#line 547 "lang.y"
        { printf("LOADF(%f)\n",(yyvsp[0].float_value)); (yyval.type_value)=FLOAT; }
-#line 2082 "y.tab.c"
+#line 2097 "y.tab.c"
     break;
 
   case 69: /* exp: NOT exp  */
-#line 543 "lang.y"
+#line 553 "lang.y"
                               {printf("NOT\n"); (yyval.type_value)=(yyvsp[0].type_value);}
-#line 2088 "y.tab.c"
+#line 2103 "y.tab.c"
     break;
 
   case 70: /* exp: exp INF exp  */
-#line 544 "lang.y"
+#line 554 "lang.y"
                               {printf("LTI\n"); (yyval.type_value)=INT;}
-#line 2094 "y.tab.c"
+#line 2109 "y.tab.c"
     break;
 
   case 71: /* exp: exp SUP exp  */
-#line 545 "lang.y"
+#line 555 "lang.y"
                               {printf("GTI\n"); (yyval.type_value)=INT;}
-#line 2100 "y.tab.c"
+#line 2115 "y.tab.c"
     break;
 
   case 72: /* exp: exp EQUAL exp  */
-#line 546 "lang.y"
+#line 556 "lang.y"
                               {printf("EQI\n"); (yyval.type_value)=INT;}
-#line 2106 "y.tab.c"
+#line 2121 "y.tab.c"
     break;
 
   case 73: /* exp: exp DIFF exp  */
-#line 547 "lang.y"
+#line 557 "lang.y"
                               {printf("NEI\n"); (yyval.type_value)=INT;}
-#line 2112 "y.tab.c"
+#line 2127 "y.tab.c"
     break;
 
   case 74: /* @7: %empty  */
-#line 550 "lang.y"
+#line 560 "lang.y"
 {
   (yyval.label_value) = cond_count++;
   printf("IFN(BoolFalse_%d)\n",(yyval.label_value));
 }
-#line 2121 "y.tab.c"
+#line 2136 "y.tab.c"
     break;
 
   case 75: /* exp: exp AND @7 exp  */
-#line 554 "lang.y"
+#line 564 "lang.y"
    {
   printf("IFN(BoolFalse_%d)\n",(yyvsp[-1].label_value));
   printf("LOADI(1)\n"); //ICI 1 fait office de true...
@@ -2131,20 +2146,20 @@ if(a->depth==depth){
   printf("BoolEnd_%d :\n",(yyvsp[-1].label_value));
   (yyval.type_value) = INT;
 }
-#line 2135 "y.tab.c"
+#line 2150 "y.tab.c"
     break;
 
   case 76: /* @8: %empty  */
-#line 565 "lang.y"
+#line 575 "lang.y"
 {
   (yyval.label_value) = cond_count++;
   printf("IF(BoolTrue_%d)\n",(yyval.label_value));
 }
-#line 2144 "y.tab.c"
+#line 2159 "y.tab.c"
     break;
 
   case 77: /* exp: exp OR @8 exp  */
-#line 569 "lang.y"
+#line 579 "lang.y"
    {
   printf("IF(BoolTrue_%d)\n",(yyvsp[-1].label_value));
   printf("LOADI(0)\n"); //ICI 0 fait office de false...
@@ -2154,13 +2169,13 @@ if(a->depth==depth){
   printf("BoolEnd_%d :\n",(yyvsp[-1].label_value));
   (yyval.type_value) = INT;
 }
-#line 2158 "y.tab.c"
+#line 2173 "y.tab.c"
     break;
 
   case 78: /* $@9: %empty  */
-#line 584 "lang.y"
+#line 594 "lang.y"
      {// Génération du code pour empiler les arguments
-        attribute a = get_symbol_value((yyvsp[0].string_value));
+        attribute a = get_symbol_value_fun((yyvsp[0].string_value));
 if (!a) yyerror("Function non déclarée");
 
         /* Si la fonction est VOID → empiler 0 comme valeur de retour */
@@ -2173,60 +2188,95 @@ if (!a) yyerror("Function non déclarée");
 	//$<type_value>$ = a -> type;
 
     }
-#line 2177 "y.tab.c"
+#line 2192 "y.tab.c"
     break;
 
   case 79: /* app: fid $@9 PO args PF  */
-#line 597 "lang.y"
+#line 607 "lang.y"
                  {
-    attribute a = get_symbol_value((yyvsp[-4].string_value));
+    attribute a = get_symbol_value_fun((yyvsp[-4].string_value));
     if (!a) yyerror("Function non déclarée");
-
+    int V = 0;
+    int I = 0;
+    int F = 0;
+    node *e = (yyvsp[-1].n);
+    node *e0 = a -> type_var -> head;
+    int n = 0;
+    while(e){
+      	if(!e0) yyerror("Trop d'arguments pour les fonction");
+      switch(e -> data){
+      case VOID :
+	if(e0 -> data != e -> data) yyerror("Mauvais arguments pour la fonctions");
+	break;
+      case INT:
+	if(e0 -> data == VOID) yyerror("MAUVAIS ARGUMENTS POUR LA FONCTION");
+	break;
+      case FLOAT:
+	if(e0 -> data != e -> data) yyerror("Mauvais arguments pour la fonctions");
+	break;
+      default:
+	yyerror("Type inconnue");
+      }
+      n++;
+      	e = e -> next;
+      	e0 = e0 -> next;
+    }
+    if(e0){      
+      yyerror("Trop peu d'arguments pour la fonction");
+    }
+    
+     
     /* arguments sont déjà évalués par 'args' et empilés (arglist produit les LOADI/LOAD/...) */
     printf("SAVEBP\n");
     printf("CALL(pcode_%s)\n", (yyvsp[-4].string_value));
     printf("RESTOREBP\n");
 
     /* supprimer les arguments empilés */
-    if ((yyvsp[-1].int_value) > 0) printf("DROP(%d)\n", (yyvsp[-1].int_value));
+    if (n > 0) printf("DROP(%d)\n", n);
 
     (yyval.type_value) = a->type;
 }
-#line 2196 "y.tab.c"
+#line 2240 "y.tab.c"
     break;
 
   case 80: /* fid: ID  */
-#line 615 "lang.y"
-                              {(yyval.string_value) = (yyvsp[0].string_value); }
-#line 2202 "y.tab.c"
+#line 654 "lang.y"
+                              {(yyval.string_value) = (yyvsp[0].string_value);}
+#line 2246 "y.tab.c"
     break;
 
   case 81: /* args: arglist  */
-#line 617 "lang.y"
-                              { (yyval.int_value) = (yyvsp[0].int_value);}
-#line 2208 "y.tab.c"
+#line 656 "lang.y"
+                              { (yyval.n) = (yyvsp[0].n);}
+#line 2252 "y.tab.c"
     break;
 
   case 82: /* args: %empty  */
-#line 618 "lang.y"
-                              {(yyval.int_value)=0;}
-#line 2214 "y.tab.c"
+#line 657 "lang.y"
+                              {(yyval.n) = NULL;}
+#line 2258 "y.tab.c"
     break;
 
-  case 83: /* arglist: arglist VIR exp  */
-#line 621 "lang.y"
-                              {(yyval.int_value) = (yyvsp[-2].int_value) + 1; }
-#line 2220 "y.tab.c"
+  case 83: /* arglist: exp vir arglist  */
+#line 660 "lang.y"
+                              {node *n = malloc(sizeof(*n));
+  n -> data = (yyvsp[-2].type_value);
+  n -> next = (yyvsp[0].n);
+  (yyval.n) = n;}
+#line 2267 "y.tab.c"
     break;
 
   case 84: /* arglist: exp  */
-#line 622 "lang.y"
-                              {(yyval.int_value)=1;}
-#line 2226 "y.tab.c"
+#line 664 "lang.y"
+                              {node *n = malloc(sizeof(*n));
+  n -> next = NULL;
+  n -> data = (yyvsp[0].type_value);
+  (yyval.n) = n;}
+#line 2276 "y.tab.c"
     break;
 
 
-#line 2230 "y.tab.c"
+#line 2280 "y.tab.c"
 
       default: break;
     }
@@ -2419,7 +2469,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 627 "lang.y"
+#line 672 "lang.y"
  
 int main () {
 
@@ -2442,7 +2492,7 @@ return stack[sp-1].int_value;\n\
 }\n\
 \n";  
 printf("%s\n",header); // ouput header
-
+remove_symbols_at_depth(0);
 return yyparse (); // output your compilation
  
  

@@ -139,7 +139,7 @@ Grammar
    80 args: arglist
    81     | ε
 
-   82 arglist: arglist VIR exp
+   82 arglist: exp vir arglist
    83        | exp
 
 
@@ -158,7 +158,7 @@ Terminals, with rules where they appear
     PO (266) 10 46 52 56 63 78
     PF (267) 11 13 46 52 56 63 78
     PV (268) 3 22 34
-    VIR (269) 14 16 82
+    VIR (269) 14 16
     RETURN (270) 45 46
     EQ (271) 44
     IF <label_value> (272) 53
@@ -212,12 +212,12 @@ Nonterminals, with rules where they appear
     $@2 (44)
         on left: 12
         on right: 13
-    params (45)
+    params <n> (45)
         on left: 14 15
         on right: 13 14
     vir (46)
         on left: 16
-        on right: 26
+        on right: 26 82
     fun_body (47)
         on left: 18
         on right: 9
@@ -320,10 +320,10 @@ Nonterminals, with rules where they appear
     fid <string_value> (80)
         on left: 79
         on right: 78
-    args <int_value> (81)
+    args <n> (81)
         on left: 80 81
         on right: 78
-    arglist <int_value> (82)
+    arglist <n> (82)
         on left: 82 83
         on right: 80 82
 
@@ -1961,8 +1961,10 @@ State 129
    72    | exp • DIFF exp
    74    | exp • AND @7 exp
    76    | exp • OR @8 exp
-   83 arglist: exp •
+   82 arglist: exp • vir arglist
+   83        | exp •
 
+    VIR    shift, and go to state 26
     AND    shift, and go to state 89
     OR     shift, and go to state 90
     DIFF   shift, and go to state 91
@@ -1976,34 +1978,26 @@ State 129
 
     $default  reduce using rule 83 (arglist)
 
+    vir  go to state 132
+
 
 State 130
 
    78 app: fid $@9 PO args • PF
 
-    PF  shift, and go to state 132
+    PF  shift, and go to state 133
 
 
 State 131
 
    80 args: arglist •
-   82 arglist: arglist • VIR exp
-
-    VIR  shift, and go to state 133
 
     $default  reduce using rule 80 (args)
 
 
 State 132
 
-   78 app: fid $@9 PO args PF •
-
-    $default  reduce using rule 78 (app)
-
-
-State 133
-
-   82 arglist: arglist VIR • exp
+   82 arglist: exp vir • arglist
 
     NUM    shift, and go to state 44
     DEC    shift, and go to state 45
@@ -2012,34 +2006,21 @@ State 133
     NOT    shift, and go to state 52
     MOINS  shift, and go to state 53
 
-    exp  go to state 134
-    app  go to state 68
-    fid  go to state 69
+    exp      go to state 129
+    app      go to state 68
+    fid      go to state 69
+    arglist  go to state 134
+
+
+State 133
+
+   78 app: fid $@9 PO args PF •
+
+    $default  reduce using rule 78 (app)
 
 
 State 134
 
-   59 exp: exp • PLUS exp
-   60    | exp • MOINS exp
-   61    | exp • STAR exp
-   62    | exp • DIV exp
-   69    | exp • INF exp
-   70    | exp • SUP exp
-   71    | exp • EQUAL exp
-   72    | exp • DIFF exp
-   74    | exp • AND @7 exp
-   76    | exp • OR @8 exp
-   82 arglist: arglist VIR exp •
-
-    AND    shift, and go to state 89
-    OR     shift, and go to state 90
-    DIFF   shift, and go to state 91
-    EQUAL  shift, and go to state 92
-    SUP    shift, and go to state 93
-    INF    shift, and go to state 94
-    PLUS   shift, and go to state 95
-    MOINS  shift, and go to state 96
-    STAR   shift, and go to state 97
-    DIV    shift, and go to state 98
+   82 arglist: exp vir arglist •
 
     $default  reduce using rule 82 (arglist)
