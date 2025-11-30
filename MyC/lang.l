@@ -1,9 +1,9 @@
 %option noyywrap
 /* avoid dependency with library fl */
 
-%{ 
-#include "y.tab.h"
+%{
 #include "Table_des_symboles.h"
+#include "y.tab.h"
 #include <stdio.h>
 
 %} 

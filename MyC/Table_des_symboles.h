@@ -16,13 +16,31 @@
 
 // #include "Table_des_chaines.h"
 
+typedef struct Node{
+  int data;
+  struct Node* next;
+}node;
+
+typedef struct List{
+  int size;
+  node *head;
+}list;
+
+
+
 /* Déclarations des types d'attributs */
 
+
+
 char* type2string (int);
+
+
 struct ATTRIBUTE {
   int type;
   int offset;
   int depth;
+  //Pour les fonctions;
+  list *type_var;
   
   /* les autres attributs dont vous pourriez avoir besoin 
      pour les symboles seront déclarés ici */

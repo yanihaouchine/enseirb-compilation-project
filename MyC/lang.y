@@ -18,7 +18,7 @@ void yyerror (char* s) {
 
 int depth=0; // block depth
 int current_type = 0; // type courant pour add_global_variable() //Modifier par yasmine
- int current_type_fun = 0;
+ int current_type_ret = 262;	
 int current_offset = 0; // compteur global pour les offsets
 static int cond_count = 0;
 #define MAX_LABELS 100
@@ -26,6 +26,8 @@ static int cond_count = 0;
 
 int current_function_arg_count = 0;
 int current_return_offset = -1;//pour loffset de retour de l fonction
+ int current_type_fun = 0;
+
 %}
 
 %union { 
@@ -36,6 +38,7 @@ int current_return_offset = -1;//pour loffset de retour de l fonction
   int type_value; //pour stocker le type de exp
   int label_value;
   int offset_value;
+  node *n;
 }
 
 %token <int_value> NUM
@@ -99,10 +102,9 @@ void end_glob_var_decl(){
 %type <type_value> type exp  typename
 %type <string_value> fun_head
 %type <string_value> fid
-%type <int_value> args arglist
 %type <type_value> app fun ret
 %type <label_value> if while cond loop if_head
-
+%type <n> params args arglist
 %%
 
  // O. Déclaration globale
@@ -124,12 +126,16 @@ glob_fun_list : glob_fun_list fun {}
 ;
 
 // I. Functions
-
-fun : type fun_head pv {printf(";\n");}
+fun : type fun_head pv {printf(";\n");
+   if(current_type_ret != current_type_fun) yyerror("erreur must return ?");
+   current_type_ret = VOID;}
 
 
 | type fun_head {if (depth > 0) yyerror("Function must be declared at top level~!\n"); } fun_body {
+  if(current_type_fun != current_type_ret){
+     yyerror("erreur de type de retour");}
   $$ = $1;
+  current_type_ret = VOID;
 };
 
 
@@ -143,9 +149,11 @@ a->type = current_type;
  current_type_fun = current_type;
     a->depth = 0;
     a->offset = 0;
-    set_symbol_value($1, a);
+    set_symbol_value_fun($1, a);
     current_function_arg_count = 0;  
     current_return_offset = -1;      
+
+  
     current_offset = 1; 
 depth=0;
     if (strcmp($1, "main") == 0) {
@@ -156,25 +164,22 @@ depth=0;
         
 
 
-    }    
-
-
+    }
 }
 
 | ID po {current_type_fun = current_type;} params PF              {
 
     attribute a = new_attribute();
     a->type = current_type_fun;
-    //current_type_fun = current_type;
     a->depth = 0;
     a->offset = 0;
-    set_symbol_value($1, a);
+    set_symbol_value_fun($1, a);
 depth=0;
     current_return_offset = -(current_function_arg_count + 1);
     current_offset = 1;
     printf("%s pcode_%s(", type2string(a -> type), $1);
     printf(")");
-    
+    a -> type_var -> head = $4;  
  } 
 ;
 
@@ -186,7 +191,10 @@ params
     a->offset = - (current_function_arg_count + 1); 
     current_function_arg_count++; 
     set_symbol_value($2, a);
-
+    node *n = malloc(sizeof(*n));
+    n -> data = $1;
+    n -> next = $4;
+    $$ = n;
 }
 | type ID {
     attribute a = new_attribute();
@@ -195,7 +203,10 @@ params
     a->offset = - (current_function_arg_count + 1);
     current_function_arg_count++;
     set_symbol_value($2, a);
-
+    node *n = malloc(sizeof(*n));
+    n -> data = $1;
+    n -> next = NULL;
+    $$ = n;
 }
 ;
 
@@ -299,7 +310,7 @@ inst_list: inst_list inst   {}
 
 pv : PV                       {}
 ;
- 
+
 inst:
 ao block af                   {
                                 }
@@ -307,7 +318,7 @@ ao block af                   {
 | aff pv                      {}
 | ret pv                      {
    
-    
+  current_type_ret = $1;
     if (current_type_fun == VOID )
     {
         yyerror("Erreur : une fonction void ne doit pas retourner de valeur");
@@ -389,8 +400,7 @@ aff : ID EQ exp {
 
 
 // IV.2 Return
-ret
-: RETURN exp {
+ret : RETURN exp {
     
 
         int d = depth-1;   //nbre de bloc a remonter 
@@ -405,12 +415,12 @@ ret
 
         /* STORE la valeur de retour */
         printf("STORE\n");
+	current_type_ret = $2;
 	$$ = $2;
   
      
 }
-| RETURN PO PF { 
-   /* return sans expression : rien à faire ici si tu veux mettre 0 par défaut */ }
+| RETURN PO PF { $$ = VOID; }
 
 // IV.3. Conditionelles
 //           N.B. ces rêgles génèrent un conflit déclage reduction
@@ -582,7 +592,7 @@ exp{
 
 app
 : fid{// Génération du code pour empiler les arguments
-        attribute a = get_symbol_value($1);
+        attribute a = get_symbol_value_fun($1);
 if (!a) yyerror("Function non déclarée");
 
         /* Si la fonction est VOID → empiler 0 comme valeur de retour */
@@ -595,16 +605,45 @@ if (!a) yyerror("Function non déclarée");
 	//$<type_value>$ = a -> type;
 
     } PO args PF {
-    attribute a = get_symbol_value($1);
+    attribute a = get_symbol_value_fun($1);
     if (!a) yyerror("Function non déclarée");
-
+    int V = 0;
+    int I = 0;
+    int F = 0;
+    node *e = $4;
+    node *e0 = a -> type_var -> head;
+    int n = 0;
+    while(e){
+      	if(!e0) yyerror("Trop d'arguments pour les fonction");
+      switch(e -> data){
+      case VOID :
+	if(e0 -> data != e -> data) yyerror("Mauvais arguments pour la fonctions");
+	break;
+      case INT:
+	if(e0 -> data == VOID) yyerror("MAUVAIS ARGUMENTS POUR LA FONCTION");
+	break;
+      case FLOAT:
+	if(e0 -> data != e -> data) yyerror("Mauvais arguments pour la fonctions");
+	break;
+      default:
+	yyerror("Type inconnue");
+      }
+      n++;
+      	e = e -> next;
+      	e0 = e0 -> next;
+    }
+    if(e0){      
+      yyerror("Trop peu d'arguments pour la fonction");
+    }
+    
+     
     /* arguments sont déjà évalués par 'args' et empilés (arglist produit les LOADI/LOAD/...) */
     printf("SAVEBP\n");
     printf("CALL(pcode_%s)\n", $1);
     printf("RESTOREBP\n");
 
     /* supprimer les arguments empilés */
-    if ($4 > 0) printf("DROP(%d)\n", $4);
+    if (n > 0) printf("DROP(%d)\n", n);
 
     $$ = a->type;
 } 
@@ -612,14 +651,20 @@ if (!a) yyerror("Function non déclarée");
 
 
 
-fid : ID                      {$$ = $1; }//nom de la fonction
+fid : ID                      {$$ = $1;};//nom de la fonction
 
 args :  arglist               { $$ = $1;}
-|                             {$$=0;}
+|                             {$$ = NULL;}
 ;
 
-arglist : arglist VIR exp     {$$ = $1 + 1; } // récursion gauche pour empiler les arguements de la fonction de gauche à droite
-| exp                         {$$=1;}
+arglist : exp vir arglist     {node *n = malloc(sizeof(*n));
+  n -> data = $1;
+  n -> next = $3;
+  $$ = n;}
+| exp                         {node *n = malloc(sizeof(*n));
+  n -> next = NULL;
+  n -> data = $1;
+  $$ = n;}
 ;
 
 
@@ -646,7 +691,7 @@ return stack[sp-1].int_value;\n\
 }\n\
 \n";  
 printf("%s\n",header); // ouput header
-
+remove_symbols_at_depth(0);
 return yyparse (); // output your compilation
  
  
