@@ -1,9 +1,8 @@
-void one() {
-  1;
-  return ;
-  }
-
+void fact (float  x)
+{
+return ;
+}
 
 void main(){
-  one();
-}
+   fact(5);
+   }

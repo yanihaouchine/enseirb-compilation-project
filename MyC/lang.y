@@ -446,9 +446,9 @@ if : IF {
 ;
 // IV.4. Iterations
 
-loop : while while_cond  {printf("IFN(EndLoop_%i ):\n",$1);} inst  {
+loop : while while_cond  {printf("IFN(EndLoop_%i)\n",$1);} inst  {
   printf("GOTO(StartLoop_%i)\n",$1);
-printf(" EndLoop_%i :\n",$1);
+printf(" EndLoop_%i: \n",$1);
 
 }
 ;

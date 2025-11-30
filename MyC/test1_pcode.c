@@ -14,6 +14,5 @@ return stack[sp-1].int_value;
 void init_glob_var(){
 }
 
-void pcode_one() {
-LOADI(1)
+void pcode_fact(){
 syntax error
