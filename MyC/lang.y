@@ -27,6 +27,7 @@ static int cond_count = 0;
 int current_function_arg_count = 0;
 int current_return_offset = -1;//pour loffset de retour de l fonction
  int current_type_fun = 0;
+ int current_fun_name = 0;
 
 %}
 
@@ -135,6 +136,7 @@ fun : type fun_head pv {printf(";\n");
      yyerror("erreur de type de retour");}
   $$ = $1;
   current_type_ret = VOID;
+  current_fun_name++;
 };
 
 
@@ -234,6 +236,7 @@ faf : AF                       {
     depth = 0;
     current_function_arg_count = 0;
     current_return_offset = -1;
+    printf("END_%d\n",current_fun_name);
     printf("}\n");
 }
 ;
@@ -414,8 +417,9 @@ ret : RETURN exp {
 
         /* STORE la valeur de retour */
         printf("STORE\n");
+	printf("GOTO(END_%d)\n",current_fun_name);
 	current_type_ret = $2;
-	$$ = $2;
+	       $$ = $2;
   
      
 }
